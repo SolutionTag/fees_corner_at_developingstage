@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+    <definition name="homescreen" template="/viewpages/homescreen.jsp">
+        <put-attribute name="header" value="/tilesjsp/header/header.jsp" />
+        <put-attribute name="leftmenu" value="/tilesjsp/menu/leftmenu.jsp" />
+        <put-attribute name="footer" value="/tilesjsp/footer/footer.jsp" />
+        <put-attribute name="panel-config" value="/tilesjsp/body/panelconfig.jsp" />
+        <put-attribute name="cssfiles" value="/tilesjsp/resourcesinfo/CSSresources.jsp" />
+        <put-attribute name="jsfiles" value="/tilesjsp/resourcesinfo/JSresources.jsp" />
+         <put-attribute name="homescreenbody" value="/tilesjsp/body/adminbody.jsp" />
+        <put-attribute name="body" />
+    </definition>
+    <definition name="body" template="/tilesjsp/body/body.jsp">
+        
+    </definition>
+
+    <definition name="schoolmasterdatascreen" extends="homescreen" template="/viewpages/settings/schoolmasterdatascreen.jsp">
+        <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
+    </definition>
+    <definition name="academicmasterdatascreen" extends="homescreen" template="/viewpages/settings/academicmasterdatascreen.jsp">
+        <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
+    </definition>
+    <definition name="academicianoperation" extends="homescreen" template="/viewpages/academics/academicianoperations.jsp">
+        <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
+    </definition>
+    
+     <definition name="studentinfoscreen" extends="homescreen" template="/viewpages/academics/studentinfo.jsp">
+        <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
+    </definition>
+      <definition name="loginpage" extends="homescreen" template="/viewpages/mastermodule/adminlogin.jsp">
+        <put-attribute name="loginpanelconfig" value="/tilesjsp/body/loginpanelconfig.jsp" />
+    </definition>
+    
+  
+<!--     <definition name="adminmainpage" template="/viewpages/mastermodule/adminmainpage.jsp">
+        <put-attribute name="header" value="/tilesjsp/header/header.jsp" />
+        <put-attribute name="leftmenu" value="/tilesjsp/menu/adminmenu.jsp" />
+        <put-attribute name="mainbody" value="/tilesjsp/body/adminbody.jsp" />
+        <put-attribute name="footer" value="/tilesjsp/footer/footer.jsp" />
+        <put-attribute name="panelconfig" value="/tilesjsp/body/panelconfig.jsp" />
+        <put-attribute name="cssfiles" value="/tilesjsp/resourcesinfo/CSSresources.jsp" />
+        <put-attribute name="jsfiles" value="/tilesjsp/resourcesinfo/JSresources.jsp" />
+    </definition>
+
+    <definition name="academicmasterdataforms" template="/formspages/settings/academicmasterdataform.jsp">
+        <put-attribute name="panelconfig" value="/tilesjsp/body/panelconfig.jsp" />
+        <put-attribute name="pageheader" value="/tilesjsp/header/pageheader.jsp" />
+    </definition>
+
+    <definition name="academicmasterdata" extends="adminmainpage" template="/viewpages/settings/academicmasterdata.jsp">
+        <put-attribute name="mainbody" value="academicmasterdataforms" />
+    </definition> -->
+
+  
+
+
+
+    <definition name="schoolsetting" template="/dynamicpage/schoolsetting.jsp" />
+    <definition name="formSubmit" template="/dynamicpage/formSubmit.jsp" />
+    <definition name="success" template="/dynamicpage/success.jsp" />
+    <definition name="dummysettings" template="/dynamicpage/dummysettings.jsp" />
+    <definition name="standardform" template="/dynamicpage/standardform.jsp" />
+    <definition name="subjectform" template="/dynamicpage/subjectform.jsp" />
+        <definition name="nonacademicmasterdatascreen" template="/dynamicpage/nonacademicmastertest.jsp" />
+    
+    
+
+
+
+</tiles-definitions>

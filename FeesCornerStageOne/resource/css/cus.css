@@ -1,0 +1,11 @@
+@charset "utf-8";
+/* CSS Document */
+		.input_fields_wrap .border_ip{
+			border:none;
+		}		
+		.input_fields_wrap .w_ip{
+			display:none;
+		}
+		 .sectionsize .border_ip{
+		border:none;
+		}

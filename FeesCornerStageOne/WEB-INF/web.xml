@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	id="WebApp_ID" version="3.0">
+ xmlns="http://java.sun.com/xml/ns/javaee"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
+
 	<display-name>Fees Corner</display-name>
 	<!-- This Servlet called while initialization of the project -->
 	 <!-- Spring root -->
@@ -38,4 +38,15 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 		<servlet-name>dispatcherServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+   <filter>
+		<filter-name>etagFilter</filter-name>
+		<filter-class>org.springframework.web.filter.ShallowEtagHeaderFilter</filter-class>
+  </filter>
+	<filter-mapping>
+		<filter-name>etagFilter</filter-name>
+		<servlet-name>petclinic</servlet-name>
+	</filter-mapping>
+	<listener>
+    <listener-class>com.feescorner.serverstartup.serverstartupServlets.JdbcDriverLeakPreventer</listener-class>
+</listener>
 </web-app>

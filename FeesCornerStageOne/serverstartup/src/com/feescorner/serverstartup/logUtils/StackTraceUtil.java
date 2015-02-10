@@ -12,7 +12,7 @@ public final class StackTraceUtil {
 
   public static String getStackTrace(Throwable aThrowable) {
     final Writer result = new StringWriter();
-    final PrintWriter printWriter = new PrintWriter(result);
+    new PrintWriter(result);
     return result.toString();
   }
 

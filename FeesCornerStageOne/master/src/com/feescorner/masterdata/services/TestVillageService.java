@@ -7,26 +7,24 @@ Aniruthan       Dec 23, 2014                        TODO
 package com.feescorner.masterdata.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.feescorner.masterdata.test.dao.TestVillageRepository;
-import com.feescorner.masterdata.test.model.TestVillage;
+import org.springframework.stereotype.Component;
+
+import com.solutiontag.entity.test.TestVillageTwo;
+import com.solutiontag.repository.test.TestVillageRepository;
 
 
-@Service
-@Transactional
+@Component
 public class TestVillageService {
 
   @Autowired
-  private TestVillageRepository testVillageRepository;
+  private TestVillageRepository testvillageRepo;
 
   public TestVillageService() {
-    System.out.println("Testvillage service..");
+   
   }
 
-  public TestVillage save(TestVillage testVillage) {
-
-    return testVillageRepository.save(testVillage);
+  public Object save(TestVillageTwo object) {
+    return testvillageRepo.save(object);
   }
 
 }

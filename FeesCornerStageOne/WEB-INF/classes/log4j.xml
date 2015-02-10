@@ -11,12 +11,13 @@
 	<!-- additional fooSystem logging -->
 	<appender name="FeesCornerServerStatupLogs" class="org.apache.log4j.FileAppender">
 		<param name="File"
-			value="C:\Users\Aniruthan\AppData\Roaming\serverStartup\serverStartuplogs.html" />
+			value="C:/Users/Aniruthan/AppData/Roaming/Feescornerlogs/serverStartup/serverStartuplogs.html" />
 		<layout class="com.feescorner.serverstartup.logUtils.CustomHtmlLayout"/>
 	</appender>
 	<appender name="Masterdata" class="org.apache.log4j.FileAppender">
 		<param name="File"
-			value="C:\Users\Aniruthan\AppData\Roaming\masterDataModule\masterDatalogs.html" />
+			value="C:/Users/Aniruthan/AppData/Roaming/Feescornerlogs/masterDataModule/masterDatalogs.html" />
+			
 		<layout class="com.feescorner.serverstartup.logUtils.CustomHtmlLayout"/>
 	</appender>
 

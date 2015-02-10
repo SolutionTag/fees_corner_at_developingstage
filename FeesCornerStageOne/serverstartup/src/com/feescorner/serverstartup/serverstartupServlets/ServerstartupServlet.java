@@ -7,15 +7,12 @@ Aniruthan       Dec 15, 2014                        TODO
 package com.feescorner.serverstartup.serverstartupServlets;
 
 import java.io.File;
-import java.util.Properties;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import com.feescorner.serverstartup.dbUtils.ApplicationUtills;
 
 public class ServerstartupServlet extends HttpServlet {
   public static final Logger logger = Logger.getLogger(ServerstartupServlet.class);
@@ -30,6 +27,7 @@ public class ServerstartupServlet extends HttpServlet {
     try {
       super.init(config);
       createLogFolders();
+      ApplicationUtills.getDataBaseProperties();
    //   initDbServices();
     } catch (ServletException servletException) {
       logger.info(servletException, servletException.fillInStackTrace());
@@ -46,8 +44,7 @@ public class ServerstartupServlet extends HttpServlet {
         file.mkdirs();
       }
     }
-    DriverManagerDataSource driverManagerDataSource =new DriverManagerDataSource();
-    driverManagerDataSource.setConnectionProperties(new Properties());
+  
     
     
     

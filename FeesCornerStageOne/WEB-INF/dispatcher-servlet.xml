@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	 xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
@@ -17,24 +19,60 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
        http://www.springframework.org/schema/data/jpa
-                           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
-       <jpa:repositories base-package="com.feescorner.masterdata.test.dao"></jpa:repositories>
-     <!--  <aop:config proxy-target-class="true"/> -->
-    <context:component-scan base-package="com.feescorner.serverstartup" >
-    </context:component-scan> 
-<!--     <context:component-scan base-package="com.feescorner.masterdata.test.dao" />
- -->  
-   <context:component-scan base-package="com.feescorner.masterdata.services"/>
-    <context:component-scan base-package="com.feescorner.masterdata.controllers"/>
-     <!--  <context:exclude-filter type="regex"  expression="com.feescorner.masterdata.controllers"/> -->
-     
-    
-    
-<!-- 	<context:annotation-config />
- -->	
- <bean id="viewresolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-	<property name="prefix" value="/dynamicpage/"/>
-	<property name="suffix" value=".jsp"/>
-	
+       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/tiles-definitions.xml</value>
+			</list>
+		</property>
 	</bean>
+	<bean id="tilesViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.tiles3.TilesView" />
+	</bean>
+	
+
+
+	<!-- <bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver"> 
+		views.properties is located in The root of the classpath <property name="basename" 
+		value="views" /> </bean> -->
+
+
+	<jpa:repositories query-lookup-strategy="create-if-not-found" base-package="com.solutiontag.repository"
+		factory-class="com.feescorner.serverstartup.factoryrepository.DefaultRepositoryFactoryBean" 
+		entity-manager-factory-ref="appEntityManagerFactory"
+		transaction-manager-ref="appTransactionManager"  />
+
+<!-- 	<jpa:repositories base-package="com.feescorner.masterdata.repositories"
+		entity-manager-factory-ref="masterEntityManagerFactory"
+		transaction-manager-ref="masterTransactionManager" query-lookup-strategy="create-if-not-found"/>
+		
+			<jpa:repositories base-package="com.feescorner.academic.repository"
+		entity-manager-factory-ref="academicEntityManagerFactory"
+		transaction-manager-ref="academicTransactionManager" /> -->
+		
+		
+	<context:annotation-config />
+	<!-- <aop:config proxy-target-class="true"/> -->
+	<context:component-scan base-package="com.feescorner.serverstartup" />
+	<context:component-scan base-package="com.feescorner.masterdata.services" />
+	<context:component-scan base-package="com.feescorner.masterdata.controllers" />
+    <context:component-scan base-package="com.feescorner.masterdata.handlers" />
+    <context:component-scan base-package="com.feescorner.academic.controller" />
+    <context:component-scan base-package="com.feescorner.academic.handler" />
+ 
+    
+   <!-- <bean class="com.feescorner.masterdata.handlers.MasterDataHandler"   /> -->
+	
+ 	<mvc:resources mapping="/resources/**" location="/resource/" />
+ 	<mvc:annotation-driven ></mvc:annotation-driven>
+ 	
+ <mvc:view-controller path="/home" view-name="homescreen" />
+ <mvc:view-controller path="/logOut" view-name="loginpage" />
+ 
+ 
+ 
 </beans>
