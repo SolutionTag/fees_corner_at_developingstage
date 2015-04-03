@@ -159,6 +159,11 @@ var FormWizard = function () {
     var onFinish = function (obj, context) {
         if (validateAllSteps()) {
             alert('form submit function');
+            var feesAssignedToStudent= finalfeesAssignmentToStudent();
+            document.getElementById("academicanFeesProfile").value=feesAssignedToStudent;
+            $("#form").attr("action","/fcds/academics/new-academician-entry");
+            $("#form").attr("method","post")
+            $("#form").submit();
             $('.anchor').children("li").last().children("a").removeClass('wait').removeClass('selected').addClass('done');
             //wizardForm.submit();
         }

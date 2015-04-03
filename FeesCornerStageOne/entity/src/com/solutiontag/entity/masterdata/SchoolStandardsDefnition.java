@@ -30,7 +30,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.feescorner.serverstartup.dbUtils.ApplicationPrimaryClass;
-import com.feescorner.serverstartup.dbUtils.ApplicationUtills;
 
 @Entity
 @Cacheable
@@ -59,7 +58,7 @@ public class SchoolStandardsDefnition extends ApplicationPrimaryClass implements
   @Column(name="sort") 
   private int sort;
   
-  @ManyToOne( fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+  @ManyToOne( fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
   @JoinColumn(name="masterdata_id")
   private SchoolMasterDataDefinition defForStandard;
   
@@ -78,7 +77,21 @@ public class SchoolStandardsDefnition extends ApplicationPrimaryClass implements
   
   @Fetch(FetchMode.JOIN)
   @OneToMany(cascade=CascadeType.ALL, mappedBy="schoolStandardsDefnition",orphanRemoval=true)
+  private Set<SchoolVocationalGroupDefinitionAssignment> groupSet =new HashSet<SchoolVocationalGroupDefinitionAssignment>();
+  
+  @Column(name="groupassigned")
+  private boolean groupassigned;
+  
+  @Fetch(FetchMode.JOIN)
+  @OneToMany(cascade=CascadeType.ALL, mappedBy="schoolStandardsDefnition",orphanRemoval=true)
   private Set<SchoolStandardWiseFeesDefinition> stdWiseFeesDefinitions =new HashSet<SchoolStandardWiseFeesDefinition>(); 
+  
+
+  
+  @Column(name="allsectionfeesessame")
+  private boolean allSectionFeesSame;
+  
+
 
   /**
    * @return the defForStandard
@@ -205,6 +218,51 @@ public class SchoolStandardsDefnition extends ApplicationPrimaryClass implements
   public void setStdWiseFeesDefinitions(Set<SchoolStandardWiseFeesDefinition> stdWiseFeesDefinitions) {
     this.stdWiseFeesDefinitions = stdWiseFeesDefinitions;
   }
+
+  /**
+   * @return the allSectionFeesSame
+   */
+  public boolean isAllSectionFeesSame() {
+    return allSectionFeesSame;
+  }
+
+  /**
+   * @param allSectionFeesSame the allSectionFeesSame to set
+   */
+  public void setAllSectionFeesSame(boolean allSectionFeesSame) {
+    this.allSectionFeesSame = allSectionFeesSame;
+  }
+
+  /**
+   * @return the groupSet
+   */
+  public Set<SchoolVocationalGroupDefinitionAssignment> getGroupSet() {
+    return groupSet;
+  }
+
+  /**
+   * @param groupSet the groupSet to set
+   */
+  public void setGroupSet(Set<SchoolVocationalGroupDefinitionAssignment> groupSet) {
+    this.groupSet = groupSet;
+  }
+
+  /**
+   * @return the groupassigned
+   */
+  public boolean isGroupassigned() {
+    return groupassigned;
+  }
+
+  /**
+   * @param groupassigned the groupassigned to set
+   */
+  public void setGroupassigned(boolean groupassigned) {
+    this.groupassigned = groupassigned;
+  }
+
+  
+
 
 
  

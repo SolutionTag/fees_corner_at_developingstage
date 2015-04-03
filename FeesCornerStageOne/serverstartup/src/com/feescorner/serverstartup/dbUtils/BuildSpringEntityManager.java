@@ -75,8 +75,8 @@ public class BuildSpringEntityManager {
 
 @Bean(name="getHibernateJpaVendorAdapter")
 public static JpaVendorAdapter getHibernateJpaVendorAdapter() {
-    hibernateJpaVendorAdaptor.setShowSql(true);
-    hibernateJpaVendorAdaptor.setGenerateDdl(true);
+  //  hibernateJpaVendorAdaptor.setShowSql(true);
+   // hibernateJpaVendorAdaptor.setGenerateDdl(true);
     hibernateJpaVendorAdaptor.setDatabase(Database.MYSQL);
     hibernateJpaVendorAdaptor.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
     return hibernateJpaVendorAdaptor;
@@ -88,17 +88,17 @@ public static HibernateJpaDialect  getHibernateJpaDialect(){
 
 public static HashMap<String,String> getJpaPropertyMap(){
   HashMap<String, String> jpaPropertyMap=new HashMap<String,String>();
-  jpaPropertyMap.put("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
-  jpaPropertyMap.put("hibernate.cache.use_second_level_cache", "true");
-  jpaPropertyMap.put("hibernate.cache.use_query_cache", "true");
-  jpaPropertyMap.put("javax.persistence.sharedCache.mode", "ENABLE_SELECTIVE");
+  //jpaPropertyMap.put("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
+ // jpaPropertyMap.put("hibernate.cache.use_second_level_cache", "true");
+  //jpaPropertyMap.put("hibernate.cache.use_query_cache", "true");
+ // jpaPropertyMap.put("javax.persistence.sharedCache.mode", "ENABLE_SELECTIVE");
   
   return  jpaPropertyMap;
 }
 
 public static Properties jpaProperties(){
   jpaProperties.put("hibernate.dialect","org.hibernate.dialect.MySQLDialect");
-  jpaProperties.put("hibernate.hbm2ddl.auto", "update");
+ // jpaProperties.put("hibernate.hbm2ddl.auto", "update");
   jpaProperties.put("hibernate.enable_lazy_load_no_trans", "true");
   jpaProperties.put("hibernate.ejb.naming_strategy", org.hibernate.cfg.ImprovedNamingStrategy.class.getName());
  

@@ -22,7 +22,7 @@
 							</a>
 							<ul class="sub-menu">
 								<li>
-									<a href="${pageContext.request.contextPath}/academics/display-student-info">
+									<a href="${pageContext.request.contextPath}/academics/student-admission">
 										<span class="title">Student Admission Form </span>
 									</a>
 								</li>
@@ -73,7 +73,7 @@
 									</a>
 								</li>
 								<li>
-									<a href="#">
+									<a href="${pageContext.request.contextPath}/finance/finanace-settings">
 										<span class="title"> Settings </span>
 									</a>
 								</li>
@@ -145,17 +145,17 @@
 							</a>
 							<ul class="sub-menu">
 								<li>
-									<a href="${pageContext.request.contextPath}/academics/display-school-master-data">
+									<a href="${pageContext.request.contextPath}/settings/display-school-master-data">
 										<span class="title"> School MGT </span>
 									</a>
 								</li>
 								<li>
-									<a href="${pageContext.request.contextPath}/academics/display-academic-master-data" id="academicmasterdata">
+									<a href="${pageContext.request.contextPath}/settings/display-academic-master-data" id="academicmasterdata">
 										<span class="title"> Academic MD MGT </span>
 									</a>
 								</li>
 								<li>
-									<a href="${pageContext.request.contextPath}/academics/nonacademic-master-data" id="">
+									<a href="${pageContext.request.contextPath}/settings/non-academic-master-data" id="">
 										<span class="title"> Non-Academic MD MGT </span>
 									</a>
 								</li>                                

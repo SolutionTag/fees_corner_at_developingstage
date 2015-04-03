@@ -56,8 +56,10 @@ public class SchoolSubjectsDefinitionAssignment extends ApplicationPrimaryClass 
   private Integer baseSubjectId;
   
   @ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
-  @JoinColumn(name="section_id")
+  @JoinColumn(name="section_id",referencedColumnName="equalId")
   private SchoolClassSectionDefinition schoolClassSection;
+  
+  
 
 
 

@@ -61,6 +61,10 @@ public class AcademicianPreviousSchoolDetails implements Serializable {
   @JoinColumn(name = "studentid") 
   @JsonBackReference
   private AcademicianInfo academicianInfo;
+  
+  
+  @Column(name="percentageofmarksinlastschool")
+  private Integer percentageOfMarksInLastSchool;
 
   /**
    * @return the studentId
@@ -172,6 +176,20 @@ public class AcademicianPreviousSchoolDetails implements Serializable {
    */
   public void setAcademicianInfo(AcademicianInfo academicianInfo) {
     this.academicianInfo = academicianInfo;
+  }
+
+  /**
+   * @return the percentageOfMarksInLastSchool
+   */
+  public Integer getPercentageOfMarksInLastSchool() {
+    return percentageOfMarksInLastSchool;
+  }
+
+  /**
+   * @param percentageOfMarksInLastSchool the percentageOfMarksInLastSchool to set
+   */
+  public void setPercentageOfMarksInLastSchool(Integer percentageOfMarksInLastSchool) {
+    this.percentageOfMarksInLastSchool = percentageOfMarksInLastSchool;
   }
   
   

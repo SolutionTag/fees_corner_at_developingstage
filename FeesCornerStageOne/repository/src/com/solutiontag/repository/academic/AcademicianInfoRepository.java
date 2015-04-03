@@ -15,6 +15,7 @@ import com.solutiontag.entity.academic.AcademicianInfo;
 public interface AcademicianInfoRepository extends JpaRepository<AcademicianInfo, Integer> {
   
    Set<AcademicianInfo> findByacademicanStandardId(int standardId);
+   //List<AcademicianInfo> findByacademicanStandardId(int standardId);
 
 }
 

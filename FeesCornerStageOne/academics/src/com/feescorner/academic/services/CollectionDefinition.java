@@ -8,11 +8,13 @@ package com.feescorner.academic.services;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.solutiontag.entity.academic.AcademicianInfo;
+import com.solutiontag.entity.finance.FeesTermsElementsArrangements;
 import com.solutiontag.entity.masterdata.SchoolClassSectionDefinition;
 import com.solutiontag.entity.masterdata.SchoolFeesDefinition;
 import com.solutiontag.entity.masterdata.SchoolFeesDefinitionAssignment;
@@ -34,11 +36,12 @@ public class CollectionDefinition implements Serializable {
   private Set<AcademicianInfo> academicianInfoSet=new HashSet<AcademicianInfo>();
   private List<AcademicianInfo> academicianInfoList=new ArrayList<AcademicianInfo>();
   private Set<SchoolSubjectsDefinitionAssignment> schoolSubjectAssignmentSet=new HashSet<SchoolSubjectsDefinitionAssignment>();
-  private  List<SchoolStandardsDefnition> standardDefList=new ArrayList<SchoolStandardsDefnition>();
+  private List<SchoolStandardsDefnition> standardDefList=new ArrayList<SchoolStandardsDefnition>();
   private Set<SchoolFeesDefinition> schoolFeesDefSet=new HashSet<SchoolFeesDefinition>();
   private Set<SchoolFeesDefinitionAssignment>  schoolFeesAssignmentSet=new HashSet<SchoolFeesDefinitionAssignment>();
   private Set<SchoolClassSectionDefinition> classSectionDefSet=new HashSet<SchoolClassSectionDefinition>();
-  
+  private HashMap<Integer,  Set<SchoolFeesDefinitionAssignment>> standardFeesMap=new HashMap<Integer, Set<SchoolFeesDefinitionAssignment>>();
+  private FeesTermsElementsArrangements feesTermElementArrangement=new FeesTermsElementsArrangements();
 
   private  static List<String> monthsList=new ArrayList<String>();
   
@@ -153,6 +156,30 @@ public List<SchoolStandardsDefnition> getStandardDefList() {
  */
 public void setStandardDefList(List<SchoolStandardsDefnition> standardDefList) {
   this.standardDefList = standardDefList;
+}
+/**
+ * @return the standardFeesMap
+ */
+public HashMap<Integer, Set<SchoolFeesDefinitionAssignment>> getStandardFeesMap() {
+  return standardFeesMap;
+}
+/**
+ * @param standardFeesMap the standardFeesMap to set
+ */
+public void setStandardFeesMap(HashMap<Integer, Set<SchoolFeesDefinitionAssignment>> standardFeesMap) {
+  this.standardFeesMap = standardFeesMap;
+}
+/**
+ * @return the feesTermElementArrangement
+ */
+public FeesTermsElementsArrangements getFeesTermElementArrangement() {
+  return feesTermElementArrangement;
+}
+/**
+ * @param feesTermElementArrangement the feesTermElementArrangement to set
+ */
+public void setFeesTermElementArrangement(FeesTermsElementsArrangements feesTermElementArrangement) {
+  this.feesTermElementArrangement = feesTermElementArrangement;
 }
 
 

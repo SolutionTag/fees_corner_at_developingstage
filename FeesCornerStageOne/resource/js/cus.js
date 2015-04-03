@@ -7,16 +7,26 @@ $(document).ready(function() {
     var x = 1; //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
-            $(this).parent().parent().children('.input_fields_wrap').append('<div class="col-md-1"><span class="input-icon input-icon-right"><input type="text"  data-sectionname="section" value="" class="form-control ipbox "><input type="hidden" name="indexId"  data-standardid="" value=""><i class="clip-close-2 remove_field"></i></span></div>'); //add input box
+            $(this).parent().parent().children('.input_fields_wrap').append('<div class="col-md-1">'+
+            		'<span class="input-icon input-icon-right">'+
+            		'<input type="text"  data-sectionname="section" value="" class="form-control ipbox ">'+
+            		'<input type="hidden" name="indexId"  data-standardid="" value="">'+
+            		'<i class="clip-close-2 remove_field"></i></span></div>'); //add input box
+            		
         
     });
    
     $(wrapper).on("mousedown",".remove_field", function(e){ //user click on remove text
          var  standardIndexId=$(this.parentElement).find('input[data-standardid]').data('standardid');
          var sectionIndexId=$(this.parentElement).find('input[data-standardid]').val();
+         var groupcompareid=$(this.parentElement).find('input[data-standardid]').data('groupcompareid');
+         typeof groupcompareid=="undefined"?0:groupcompareid=groupcompareid;
          if( sectionIndexId !="" && standardIndexId !=""){
-         	var deleteParameters= {"standardIndexId":standardIndexId,
-         		 "sectionIndexId":sectionIndexId}
+         	var deleteParameters= {
+         		"standardIndexId":standardIndexId,
+         		 "sectionIndexId":sectionIndexId,
+         		 "groupcompareId":groupcompareid
+         		 }
          	deleteSection(deleteParameters);
          	$(this).parent('span').parent('div').remove();
          }else{

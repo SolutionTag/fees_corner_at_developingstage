@@ -333,7 +333,8 @@ tr.noBorder td {border: 0; }
   <ul>
   <c:forEach var="standardDef" items="${schoolMasterDataDefinition.schoolStandardsDefnition}" varStatus="standardLoop1">
 		<c:if test="${standardDef.statusForChecked==false}">
-	 <li data-standardId="${standardDef.standardId}" data-stanadrdName="${standardDef.standardName}"><a href="#tabs-${standardLoop1.index}">${standardDef.standardName}</a></li>
+	 <li data-standardId="${standardDef.standardId}" data-stanadrdName="${standardDef.standardName}">
+	 <a href="#tabs-${standardLoop1.index}">${standardDef.standardName}</a></li>
        </c:if>
 													       </c:forEach>
     <!-- <li><a href="#tabs-1">Nunc tincidunt</a></li>

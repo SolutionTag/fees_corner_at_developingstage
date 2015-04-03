@@ -8,16 +8,19 @@ package com.feescorner.academic.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -25,20 +28,29 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import atg.taglib.json.util.JSONArray;
+import atg.taglib.json.util.JSONException;
+import atg.taglib.json.util.JSONObject;
+
 import com.feescorner.academic.handler.AcademicHandler;
-import com.feescorner.academic.services.SetDefnitions;
+import com.feescorner.academic.services.CollectionDefinition;
+import com.feescorner.serverstartup.dbUtils.ApplicationComparator;
 import com.feescorner.serverstartup.dbUtils.ApplicationUtills;
 import com.solutiontag.entity.academic.AcademicianInfo;
-import com.solutiontag.entity.academic.AcademicianStandardInfo;
+import com.solutiontag.entity.masterdata.SchoolClassSectionDefinition;
 import com.solutiontag.entity.masterdata.SchoolCollection;
+import com.solutiontag.entity.masterdata.SchoolFeesDefinitionAssignment;
 import com.solutiontag.entity.masterdata.SchoolMasterDataDefinition;
+import com.solutiontag.entity.masterdata.SchoolStandardsDefnition;
 import com.solutiontag.entity.masterdata.SchoolSubjectsDefinition;
 import com.solutiontag.repository.academic.AcademicianInfoRepository;
 import com.solutiontag.repository.academic.AcademicianStandardInfoRepository;
 import com.solutiontag.repository.masterdata.SchoolClassSectionDefinitionRepository;
 import com.solutiontag.repository.masterdata.SchoolCollectionRepository;
+import com.solutiontag.repository.masterdata.SchoolFeesDefinitionAssignmentRepository;
 import com.solutiontag.repository.masterdata.SchoolMasterDataDefinitionRepository;
 import com.solutiontag.repository.masterdata.SchoolStandardsDefnitionRepository;
 
@@ -59,6 +71,8 @@ public class AcademicController {
   public SchoolClassSectionDefinitionRepository schoolSectionRepo;
   @Autowired 
   public AcademicianStandardInfoRepository standardInfoRepository;
+  @Autowired
+  public SchoolFeesDefinitionAssignmentRepository feesAssignmentRepo;
   public AcademicController(){
   }
   public static int s=234005;
@@ -66,7 +80,7 @@ public class AcademicController {
   public static int genderId=0;
   public static int villageId=0;
   public static int standardId=0;
-  public static Integer[] standardArray={20999, 96283, 74269, 34334, 27426, 30499, 48939, 60043, 41130, 21697, 48861, 45031, 78843, 96764  };
+  public static Integer[] standardArray={14237, 59943, 65272, 66904, 67361, 84758, 86240, 86848, 89214, 93299, 59020, 52911, 18958, 20769, 26491, 35255, 38920, 45231, 45694, 46884, 51126, 96811};
   public static String[] cast={"BC","MBC","SC","ST","OB"};
   public static String[] gender={"MALE","FEMALE"};
   public static String[] village={"DURUGAM","KALLAKURICHI","ULUNDURPATTAI","KEERANUR","KACHIRAPAALAYAM","EMAPAIR","NEELAMANGALAM"};
@@ -76,15 +90,27 @@ public class AcademicController {
     System.out.println("sAVE SCHOOL");
     return "redirect:/display-student-info";
   }
-  @RequestMapping(value="/display-student-info")
+  @RequestMapping(value="/student-admission")
   public String lauchStudentDataScreen(Model model,HttpServletResponse res) throws InterruptedException, UnsupportedEncodingException, IOException{
-    
+  CollectionDefinition collectionDef=new CollectionDefinition();
+ HashMap<Integer,  Set<SchoolFeesDefinitionAssignment>> standardFeesMap=new HashMap<Integer, Set<SchoolFeesDefinitionAssignment>>();
+  Set<Integer> enabledStandardSet=standardDefintionRepo.returnEnabledStandards(true);
+   Iterator<Integer> iterator= enabledStandardSet.iterator();
+   while(iterator.hasNext()){
+     Integer standardId= iterator.next();
+     Set<SchoolFeesDefinitionAssignment>  feesDefAssignment=feesAssignmentRepo.returnFeesesForStandards(standardId);
+     standardFeesMap.put(standardId, feesDefAssignment);
+   }
+   collectionDef.setStandardFeesMap(standardFeesMap);
+
+     
+   
     long now = System.currentTimeMillis();
     new java.sql.Date(now);
     ApplicationUtills.getSchoolCollectionObject();
     AcademicianInfo  acdemicianInfoObj=new AcademicianInfo();
   //  AcademicianStandardInfo academicianStdInfo=new AcademicianStandardInfo();
-    SchoolCollection schoolCollection=schoolCollectionRepo.findOne("RAVI SCHOOLCBSEPRE-PRIMARY34991");
+    SchoolCollection schoolCollection=schoolCollectionRepo.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
     System.out.println(schoolCollection);
 /*    
     
@@ -96,7 +122,7 @@ public class AcademicController {
    System.out.println(json);
     }*/
  
-/*   String[] studentNames =
+/*String[] studentNames =
       {"My Baby Names", "Saguna", "Khagesh", "Dhirendra", "Sushim", "Priyanka", "Mugdha",
           "Visvajit", "Gopan", "Purnima, Poornima", "Kaushik", "Uttanka", "Ninad , Ninaad",
           "Vishodhan", "Tanish", "Virbhanu", "My Baby Names", "Aadarsh", "Aadesh", "Aadhira",
@@ -189,7 +215,8 @@ public class AcademicController {
     
   for(int student=0;student<studentNames.length;student++){
    java.sql.Date date= new java.sql.Date(ApplicationUtills.getRandomTimeBetweenTwoDates().getTime());
-   
+   java.util.Date today = new java.util.Date();
+   java.sql.Timestamp timestamp = new java.sql.Timestamp(today.getTime());
    acdemicianInfoObj=new AcademicianInfo();
    // academicianStdInfo=new AcademicianStandardInfo();
     String fullname=studentNames[student].substring(0,1)+" "+studentNames[student];
@@ -199,19 +226,21 @@ public class AcademicController {
     acdemicianInfoObj.setAcademicianNationality("INDIAN");
     acdemicianInfoObj.setAcademicianName(fullname);
     acdemicianInfoObj.setAcademicianCategory(cast[castId]);
-    acdemicianInfoObj.setAcademicianAdmissionDate(new Date(System.currentTimeMillis()));
+    acdemicianInfoObj.setAcademicianAdmissionDate(timestamp);
     acdemicianInfoObj.setAcademicianGender(gender[genderId]);
     acdemicianInfoObj.setAcademicianFrom(village[villageId]);
     acdemicianInfoObj.setAcademicanStandardId(standardArray[standardId]);
+     Integer mapkeyid=acdemicianInfoObj.getCompareId();
     acdemicianInfoObj.setSchoolCollection(schoolCollection);
-    
+    schoolCollection.getAcadeinfo().put(mapkeyid, acdemicianInfoObj);
+    academicainInfoRepos.save(acdemicianInfoObj);
     academicianStdInfo.setAcademicanStandardId();
     academicianStdInfo.setAcademicyear(new Date(System.currentTimeMillis()));
     academicianStdInfo.setAcdemicianInfo(acdemicianInfoObj);
     
     //se(ApplicationUtills.RomanNumerals(ApplicationUtills.randInt()));
+    //schoolCollectionRepo.saveAndFlush(schoolCollection);
     
-    academicainInfoRepos.save(acdemicianInfoObj);
    // schoolCollection.getAcademicianInfoMap().put(acdemicianInfotwo.getAcademicianId(), acdemicianInfotwo);
   //  schoolCollectionRepo.save(schoolCollection);
     s++;
@@ -238,18 +267,18 @@ public class AcademicController {
     
     }
     }*/
-    SchoolMasterDataDefinition schoolMasterDataDefinition =masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY46196");
-  model.addAttribute("schoolMasterDataDefinition", schoolMasterDataDefinition);
+   // SchoolMasterDataDefinition schoolMasterDataDefinition =masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY46196");
+  model.addAttribute("schoolMasterDataDefinition", schoolCollection.getSchoolMasterData());
   model.addAttribute("academicianInfo", new AcademicianInfo());
-
+  model.addAttribute("collectionDef", collectionDef); 
     //model.addAttribute("academicianAddress", academicanInfo.getAcademicianAddress());
   ///  model.addAttribute("academicianPreviousSchoolDetails", academicanInfo.getAcademicianPreviousSchoolDetails());
-  return "studentinfoscreen";
+  return "admissionscreen";
  }
 
   @RequestMapping(value="student-operations",method=RequestMethod.GET)
   public String academicanClassAssign(Model model,HttpServletRequest request, HttpServletResponse resp) {
-    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY34991");
+    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
  Set< AcademicianInfo> academicianInfo  =academicainInfoRepos.findByacademicanStandardId(20999);
  System.out.println(academicianInfo);
   //  Set<AcademicianStandardInfo> academicianStandardList = standardInfoRepository.returnStudentStandardsSet(62208);
@@ -258,15 +287,16 @@ public class AcademicController {
     model.addAttribute("subjectDefintion",new SchoolSubjectsDefinition());
     return "academicianoperation";
   }
+  @SuppressWarnings("unchecked")
   @RequestMapping(value="/standard/{standardid}",method=RequestMethod.POST)
   public String returnAcademiciansAgainstStandards(@PathVariable("standardid") Integer standardid, Model model,HttpServletRequest request,HttpServletResponse resp){
-    SetDefnitions setDef=new SetDefnitions();
-    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY34991");
-    
+    CollectionDefinition setDef=new CollectionDefinition();
+    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
     Set<AcademicianInfo> academicianInfo = new HashSet<AcademicianInfo>(academicainInfoRepos.findByacademicanStandardId(standardid)); //standardInfoRepository.returnStudentStandardsSet(standardid);
-  //  Set<AcademicianStandardInfo> academicianStandardList = standardInfoRepository.returnStudentStandardsSet(62208);
-   // System.out.println(academicianStandardList.size() );
+    List<AcademicianInfo> academicianInfoList=new ArrayList<AcademicianInfo>(academicianInfo);
+    Collections.sort(academicianInfoList,ApplicationComparator.studentAdmissionDateComparator);
     setDef.setAcademicianInfoSet(academicianInfo);
+    setDef.setAcademicianInfoList(academicianInfoList);
     model.addAttribute("schoolMasterDataDefinition",schoolMasterDataDefinition);
     model.addAttribute("subjectDefintion",new SchoolSubjectsDefinition());
     model.addAttribute("setDef",setDef);
@@ -274,5 +304,40 @@ public class AcademicController {
    
     return "academicianoperation";
   }
-  
+  @RequestMapping(value="/sectionAllocation",method=RequestMethod.POST)
+  public String sectionAllocation(@RequestParam String wrappedData, Model model,HttpServletRequest request,HttpServletResponse response) throws JSONException{
+    CollectionDefinition setDef=new CollectionDefinition();
+    SchoolCollection schoolCollection= schoolCollectionRepo.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+     Map<Integer,AcademicianInfo> academicianInfoMap=schoolCollection.getAcadeinfo();
+     
+    JSONObject sectionwiseStudents=new JSONObject(wrappedData);
+    Iterator<String> iterator= sectionwiseStudents.keys();
+    while(iterator.hasNext()){
+       Integer sectionId=Integer.parseInt(iterator.next());
+       SchoolClassSectionDefinition classSection= schoolSectionRepo.findOne(sectionId);
+    JSONArray academicianCompareIds=   sectionwiseStudents.getJSONArray(sectionId.toString());
+    for(int i=0;i<academicianCompareIds.length();i++){
+     
+       Integer compareId=(Integer) academicianCompareIds.get(i);
+       AcademicianInfo academicianInfo= academicianInfoMap.get(compareId);
+       academicianInfo.setAcademicianSectionId(classSection.getSectionId());
+       academicianInfo.setAcademicianSectionName(classSection.getSectionName());
+       academicainInfoRepos.saveAndFlush(academicianInfo);
+    }
+      // sectionwiseStudents.getInt(sectionId);
+    }
+    model.addAttribute("schoolMasterDataDefinition",schoolCollection.getSchoolMasterData());
+    model.addAttribute("subjectDefintion",new SchoolSubjectsDefinition());
+    model.addAttribute("setDef",setDef);
+    return "academicianoperation";
+  }
+  @RequestMapping(value="new-academician-entry")
+  public String newacademicianentry(@ModelAttribute("academicianInfo") AcademicianInfo academicianInfo,HttpServletRequest request,HttpServletResponse response,Model model) {
+    java.util.Date today = new java.util.Date();
+    java.sql.Timestamp timestamp = new java.sql.Timestamp(today.getTime());
+    academicianInfo.setAcademicianAdmissionDate(timestamp);
+    System.out.println("clean"+academicianInfo);
+    
+    return "";
+  }
 }

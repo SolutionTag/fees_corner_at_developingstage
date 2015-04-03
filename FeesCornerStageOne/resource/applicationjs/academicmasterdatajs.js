@@ -1,24 +1,32 @@
-var standardJson={standardId:"",standardName:"",isSelected:""};
-var selectedStandards;
-var standardArray=[];
-var checkBoxObjects;
-var flagForCheckEmpty=false;
-var sectionDeclaratonTable;
-var section=new Object();
-var sectionsForStandards=new Object();
-section={sectionId:"",sectionName:"",maximumStudents:0};
-var actionContent;
-var masterDataId;
-var feed;
-var wantedForSubjectAssignment=new Object();
-var sectionsForStandards=new Object();
-var subjectAssignmentData=new Object();
-
+var standardJson={standardId:"",standardName:"",isSelected:""},
+ selectedStandards,
+ standardArray=[],
+ checkBoxObjects,
+ flagForCheckEmpty=false,
+ sectionDeclaratonTable,
+ section=new Object(),
+ groupsections=new Object(),
+ sectionsForStandards=new Object(),
+section={sectionId:"",sectionName:"",maximumStudents:0},
+ actionContent,
+ masterDataId,
+ feed,
+ wantedForSubjectAssignment=new Object(),
+wantedForGroupSubjectAssignment=new Object(),
+wantedForGroupMetaInfo=new Object(),
+ sectionsForStandards=new Object(),
+ subjectAssignmentData=new Object(),
+ availableSubjectObj,
+ wantedForVocationalGroupAssignment=new Object();
 
 var sectionArray=[];
 $(document).ready(function(){
+	availableSubjectObj=$("#availablesubjects li").clone();
 	masterDataId=document.getElementById("masterDataId").value;
-	wantedForSubjectAssignment=JSON.parse($("#generateJson").html());
+	wantedForSubjectAssignment=JSON.parse($("#generateJsonOne").html());
+	wantedForGroupSubjectAssignment=JSON.parse($("#generateJsonThree").html());
+	wantedForVocationalGroupAssignment=JSON.parse($("#generateJsonTwo").html())
+	wantedForGroupMetaInfo=JSON.parse($("#generateJsonFour").html())
 	loadSection();
 	 actionContent=	"<td class=\"center\">"+
 	"<div class=\"visible-md visible-lg hidden-sm hidden-xs\">"+
@@ -155,53 +163,197 @@ $(document).ready(function(){
 		}
 	})
 $("#standardDiv #standardList").change(function(event){
-	
+	$("#assignedsubjects li").css("display","none");
+	$("#assignedsubjects li").attr("data-validforstore","false");
+	$("#availablesubjects li").css("display","");
+	$('#sectionList option[value="111"]').data("vocationalgroupid","");
 	var standardId=$(this.selectedOptions).data('standardid');
-	var optionsArray=wantedForSubjectAssignment[standardId]
+	var isgroupAssigned=$(this.selectedOptions).data('groupassigned');
+//	$("#assignedsubjects li[data-standardid="+standardId+"]").css("display","");
+	var  qualifiedSubjects=$("#assignedsubjects li[data-standardid="+standardId+"]");
+	if(qualifiedSubjects.length!=0){
+		qualifiedSubjects.each(function(question,answer){
+			$("#availablesubjects li[data-basesubjectid="+$(this).attr("data-basesubjectid")+"]").css("display","none");
+		})
+}
+else{
+	$("#availablesubjects li").css("display","");
+}
+	if(isgroupAssigned==true){
+		$("div [data-name=vocationalgroupdiv]").css("display","")
+		var vocationalGroups= wantedForGroupSubjectAssignment[standardId];
+		var options='';
+		Object.keys(vocationalGroups).forEach(function(vocatinalgroupid,v){
+			var groupName=wantedForGroupMetaInfo[vocatinalgroupid].groupname;	
+			options+="<option data-standardid="+standardId+" data-vocationalgroupid="+vocatinalgroupid+" value="+groupName+">"+groupName+"</option>"
+			})
+			$('#vocationalgroupselect option[value!="111"]').remove();
+			$('#vocationalgroupselect option[value="111"]').attr("data-standardid",standardId);
+			$("#vocationalgroupselect").append(options)
+			$('#sectionList option[value!="111"]').remove();
+	}
+	else{
+		$("div [data-name=vocationalgroupdiv]").css("display","none")
+		$("#assignedsubjects li[data-standardid="+standardId+"]").attr("data-validforstore","true");
+		var optionsArray=wantedForSubjectAssignment[standardId]
+		
+		var options='';
+			for(var t=0;t<optionsArray.length;t++){
+			options+="<option data-standardid="+standardId+" data-sectionid="+optionsArray[t].sectionId+" value="+optionsArray[t].sectionName+">"+optionsArray[t].sectionName+"</option>"
+			}
+			$('#sectionList option[value!="111"]').remove();
+			$('#sectionList option[value="111"]').attr("data-standardid",standardId);
+			$('#sectionList').append(options)
+	}
 	
-	var options='';
-		for(var t=0;t<optionsArray.length;t++){
-		options+="<option data-sectionid="+optionsArray[t].sectionId+" value="+optionsArray[t].sectionName+">"+optionsArray[t].sectionName+"</option>"
-		}
+	
+});
+	$("select#vocationalgroupselect").change(function(){
+		$("#assignedsubjects li").css("display","none");
+		$("#assignedsubjects li").attr("data-validforstore","false");
+		$("#availablesubjects li").css("display","");
+		$('#sectionList option[value="111"]').data("vocationalgroupid","")
+		if($(this.selectedOptions).val()!="111"){
+		var standardid=$(this.selectedOptions).data('standardid');
+		var vocationalgroupid=$(this.selectedOptions).data('vocationalgroupid');
+		var vocationalGroups= wantedForGroupSubjectAssignment[standardid];
+		var optionsArray=vocationalGroups[vocationalgroupid];
+		var options='';
+			for(var t=0;t<optionsArray.length;t++){
+			options+="<option  data-vocationalgroupid="+vocationalgroupid+" data-sectionid="+optionsArray[t].sectionId+" value="+optionsArray[t].sectionName+">"+optionsArray[t].sectionName+"</option>"
+			}
+			$('#sectionList option[value!="111"]').remove();
+			$('#sectionList option[value="111"]').data("vocationalgroupid",vocationalgroupid);
+			$('#sectionList option[value="111"]').attr("data-vocationalgroup","true");
+			$('#sectionList').append(options)
+	}else{
 		$('#sectionList option[value!="111"]').remove();
-		$('#sectionList').append(options)
+	}
+	});
+	$("#sectionDiv #sectionList").change(function(event){
+		if($(this.selectedOptions).val()!="111"){
+			$("#assignedsubjects li").css("display","none");
+			$("#assignedsubjects li").attr("data-validforstore","false");
+			$("#availablesubjects li").css("display","");
+			
+			var standardId=$(this.selectedOptions).data('standardid');
+			typeof standardId=="undefined"?standardId=$(this.selectedOptions).data('vocationalgroupid'):standardId=standardId
+			var sectionid=$(this.selectedOptions).data('sectionid');
+			
+			
+			$("#assignedsubjects li[data-standardid="+standardId+"][data-sectionid="+sectionid+"]").css("display","");
+			var qualifiedSubjects=$("#assignedsubjects li[data-standardid="+standardId+"][data-sectionid="+sectionid+"]");
+			$("#availablesubjects li").remove();
+			$(availableSubjectObj).css("display","");
+			$("#availablesubjects").append(availableSubjectObj)
+			if(qualifiedSubjects.length!=0){
+					qualifiedSubjects.each(function(question,answer){
+						$("#availablesubjects li[data-basesubjectid="+$(this).attr("data-basesubjectid")+"]").css("display","none");
+					})
+			}
+			else{
+				$("#availablesubjects li").css("display","");
+			}
+			$("#assignedsubjects li[data-standardid="+standardId+"][data-sectionid="+sectionid+"]").attr("data-validforstore","true");
+		}else{
+			var standardId=$(this.selectedOptions).data('standardid');
+			var isGroupAssigned=$(this.selectedOptions).data('vocationalgroup'); 
+			typeof standardId=="undefined"?standardId=$(this.selectedOptions).data('vocationalgroupid'):standardId=standardId;
+			
+			$("#assignedsubjects li").css("display","none");
+			$("#assignedsubjects li").attr("data-validforstore","false");
+			$("#availablesubjects li").css("display","");
+			var qualifiedSubjects=	$("#assignedsubjects li[data-standardid="+standardId+"]");
+				if(isGroupAssigned==true && qualifiedSubjects.length==0) {
+					qualifiedSubjects=	$("#assignedsubjects li[data-standardid="+$(this.selectedOptions).data('vocationalgroupid')+"]"); 
+			}
+			$("#availablesubjects li").remove();
+			$(availableSubjectObj).css("display","");
+			$("#availablesubjects").append(availableSubjectObj);
+				if(qualifiedSubjects.length!=0){
+					
+			qualifiedSubjects.each(function(question,answer){
+				$("#availablesubjects li[data-basesubjectid="+$(this).attr("data-basesubjectid")+"]").css("display","none");
+			});
+				}else{
+					$("#availablesubjects li").css("display","");
+				}
+			/*$("#assignedsubjects li[data-standardid="+standardId+"]").css("display","");
+			$("#assignedsubjects li[data-standardid="+standardId+"]").attr("data-validforstore","true");*/
+		}
+		
+	});	
 	
-})
 
 $("#subjectAssignmentSave").click(function(event){
 	var sectionSubjects=new Object();
 	var finalAssignmentData=new Object();
-	var selectedSubjects=$("#subjectsLists input[type='checkbox']:checked");
-	var standardId=$("#standardList option:selected").data('standardid');
-	var sectionType =$("#sectionList").val();
-	var particularsectionid=$("#sectionList option:selected").data('sectionid')
-
-	var optionsArray=wantedForSubjectAssignment[standardId];
-	 var indexIds=[];
-	selectedSubjects.each(function(subjectkey,subjectval){
-		indexIds.push(subjectval.value);
-	});
+	var selectedSubjects=$("#assignedsubjects li[data-validforstore=true]");
 	
-	if(sectionType=="111"){
-		for(var oA=0;oA<optionsArray.length;oA++){
-			console.log(optionsArray[oA])
-			console.log(sectionSubjects)
-			sectionSubjects[optionsArray[oA].sectionId]=indexIds;
-		}
-	}else{
-		sectionSubjects[particularsectionid]=indexIds;
+	
+	var standardId=$("#standardList option:selected").data('standardid');
+	var groupassigned=$("#standardList option:selected").data('groupassigned');
+	if(groupassigned!=true){
+		var sectionType =$("#sectionList").val();
+		var particularsectionid=$("#sectionList option:selected").data('sectionid')
+
+		var optionsArray=wantedForSubjectAssignment[standardId];
+		 var indexIds=[];
+		selectedSubjects.each(function(subjectkey,subjectval){
+			indexIds.push(parseInt(subjectval.dataset.basesubjectid));
+		});
 		
+		if(sectionType=="111"){
+			for(var oA=0;oA<optionsArray.length;oA++){
+				console.log(optionsArray[oA])
+				console.log(sectionSubjects)
+				sectionSubjects[optionsArray[oA].sectionId]=indexIds;
+			}
+		}else{
+			sectionSubjects[particularsectionid]=indexIds;
+			
+		}
+		finalAssignmentData.standardId=standardId;
+		finalAssignmentData.sectionData=sectionSubjects;
+		finalAssignmentData.groupassigned=false;
+		
+	}else{
+		var sectionType =$("#sectionList").val();
+		var particularsectionid=$("#sectionList option:selected").data('sectionid')
+		var vocationalgroupid=$("#sectionList option:selected").data('vocationalgroupid');
+		//var optionsArray=wantedForSubjectAssignment[standardId];
+		
+		var vocationalGroups= wantedForGroupSubjectAssignment[standardId];
+		var optionsArray=vocationalGroups[vocationalgroupid];
+		 var indexIds=[];
+		selectedSubjects.each(function(subjectkey,subjectval){
+			indexIds.push(parseInt(subjectval.dataset.basesubjectid));
+		});
+		
+		if(sectionType=="111"){
+			for(var oA=0;oA<optionsArray.length;oA++){
+				sectionSubjects[optionsArray[oA].sectionId]=indexIds;
+			}
+		}else{
+			sectionSubjects[particularsectionid]=indexIds;
+			
+		}
+		finalAssignmentData.standardId=standardId;
+		finalAssignmentData.sectionData=sectionSubjects;
+		finalAssignmentData.groupassigned=true;
+		finalAssignmentData.groupassignedId=vocationalgroupid;
 	}
-	finalAssignmentData.stanadrdId=standardId;
-	finalAssignmentData.sectionData=sectionSubjects;
+
+	
 	
 	
 	$.ajax({
 		type:"post",
+		cache: false,
 		url:"/fcds/settings/subjectAssignment",
 		data : "finalAssignmentData="+JSON.stringify(finalAssignmentData),
 		success:function(data){
-			
+			alert(data);
 		},
 		error:function(){
 		}
@@ -210,81 +362,187 @@ $("#subjectAssignmentSave").click(function(event){
 	
 	
 });
-	$( "#draggable-list1" ).sortable({
-		opacity:0.5,connectWith: ".cond",
+	$( "#assignedsubjects" ).sortable({opacity:0.5,connectWith: ".cond",
 		receive:function(event,ui){
-			alert("___")
-			var subjectval=ui.item;
-		if(	subjectval.data().validforstore==true){
-			subjectval.data().validforstore=false;
-			var indexIds=[];
-			var	 finalAssignmentData=new Object();
-			var standardId=$("#standardList option:selected").data('standardid');
-			var sectionType =$("#sectionList").val();
-			var particularsectionid=$("#sectionList option:selected").data('sectionid')
-			
-			var optionsArray=wantedForSubjectAssignment[standardId];
-			var sectionSubjects=new Object();
-			
-			var subjectIndexId=subjectval.data().value;
-				indexIds.push(subjectIndexId);
-				
-			
-				if(sectionType=="111"){
-					for(var oA=0;oA<optionsArray.length;oA++){
-						console.log(optionsArray[oA])
-						console.log(sectionSubjects)
-						sectionSubjects[optionsArray[oA].sectionId]=indexIds;
-					}
-				}else{
-					var  indexIds=[];
-					sectionSubjects[particularsectionid]=indexIds;
-					
-				}
-				finalAssignmentData.stanadrdId=standardId;
-				finalAssignmentData.sectionData=sectionSubjects;
-				$.ajax({
-					type:"post",
-					url:"/fcds/settings/subjectAssignment",
-					data : "finalAssignmentData="+JSON.stringify(finalAssignmentData),
-					success:function(data){
-						
-					},
-					error:function(){
-					}
-					
-				})
-				
-		}	
-			
-		},
-	    update:function(ev,ui){
-	    }
-		
+			$(ui.item).attr('data-validforstore',"true");
+			$(ui.item).css("background-color","#D3D3D3 !important");
+			$(ui.item).css("border-color","#D3D3D3 !important");
+		}
 	
 	}).disableSelection();
-	$("#draggable-list2").sortable({
-		opacity:0.5,connectWith: ".cond",
-		stop: function (ev, ui) {
-		       // if (ui.item.hasClass("number"))
-			
-		          
-		    },
-		    receive:function(event,ui){
-		    	var subjectval=ui.item;
-		    	subjectval.data().validforstore=true;
-		    	
-		    },
-		    update:function(){
-		    	 
-		    },
-		    remove:function(){
-		    	
-		    },
-		    
-		
+	$( "#availablesubjects" ).sortable({opacity:0.5,connectWith: ".cond",
+		receive:function(event,ui){
+			$(ui.item).attr('data-validforstore',"false");
+			$(ui.item).css("background-color","");
+			$(ui.item).css("border-color","");
+		}	
+	
+	}).disableSelection();
+	
+	$("#vocationalGroupSave").click(function(){
+		var vocationalForm= $("#vocationalgroupdef").serializeArray();
+		var serializedObject={};
+		$.each(vocationalForm,function(key,val){
+			serializedObject[val.name]=val.value;
+		})
+		$.ajax({
+			type:"post",
+			cache: false,
+			contentType: "application/json; charset=utf-8",
+			url:"/fcds/settings/create-vocational-group",
+			data :JSON.stringify(serializedObject),
+			success:function(data){
+				alert(data);
+				document.getElementById("vocationalgroupdef").reset();
+				
+			},
+			error:function(){
+			}
+		})
+	});
+	$("#standardsforassigngroup").change(function(){
+		$("#vocationalgrouplists input[type='checkbox']").iCheck('uncheck');
+		$("#vocationalgrouplists input[type=checkbox]").attr("data-derivedcompareid","");
+		var standardId=$(this.selectedOptions).data('standardid');
+		var vocationalGroupArray= wantedForVocationalGroupAssignment[standardId];
+		var size=vocationalGroupArray.length;
+		if(size!=0){
+			for(var i=0;i<size;i++){
+				var baseGroupCompareId=vocationalGroupArray[i].basegroupcompareid;
+				var derivedcompareid=vocationalGroupArray[i].derivedcompareid;
+				var status=vocationalGroupArray[i].status;
+				$("input[data-basegroupcompareid="+baseGroupCompareId+"]").attr("data-derivedcompareid",derivedcompareid);
+				if(status){
+					$("input[data-basegroupcompareid="+baseGroupCompareId+"]").iCheck('check');
+				}
+			}
+		}
 		
 	});
+	$("#assignvocationaltostandards").click(function(){
+	var standardid=	$("#standardsforassigngroup :selected").attr('data-standardid')
+	var sectionassigned=$("#standardsforassigngroup :selected").attr('data-issectionexit')
+	var response;
+	if(sectionassigned=="true"){
+		 response= confirm("Sections are created for this standard.If you continue all the SECTIONS Would be Deleted.Do You want to Continue?");
+	}else{
+		response=true;
+	}
+	if(response){
+	var assignedvocationalgroups="";
+	if(wantedForVocationalGroupAssignment[standardid].length!=0){
+		 assignedvocationalgroups = $("#vocationalgrouplists input[type='checkbox']");
+	}else{
+		 assignedvocationalgroups = $("#vocationalgrouplists input[type='checkbox']:checked");
+	}
+		var vocationalStandard=new Object();
+		var standardid=$("#standardsforassigngroup option:selected").attr("data-standardid");
+		var assignedVocatinal=new Object();
+		assignedVocatinal=$.map(assignedvocationalgroups,function(obj,i){
+		
+						var basegroupcompareid=obj.dataset.basegroupcompareid;
+						var derivedcompareid=obj.dataset.derivedcompareid;
+						var groupobject=new Object();
+						if(obj.checked){
+							groupobject.status=true;
+						}else{
+							groupobject.status=false;
+						}
+						groupobject.basegroupcompareid=parseInt(basegroupcompareid);
+						if(derivedcompareid!=""){
+							groupobject.derivedcompareid=parseInt(derivedcompareid)
+						}else{
+							groupobject.derivedcompareid="NEW";
+						}
+						
+						
+						return groupobject;
+			});
+		
+		// vocationalStandard.isSectionExit=sectionassigned;
+		vocationalStandard[standardid]=assignedVocatinal;
+		//var json=new Object();
+		//json=vocationalStandard
+		 var data={ "vocationalstandars":vocationalStandard,
+				   "isSectionExit":sectionassigned
+		 }
+		$.ajax({
+			 type:"post",
+			 data:JSON.stringify(data),
+			 contentType: 'application/json',
+			 url:"/fcds/settings/assign-vocational-group",
+			 success:function(data){
+				 var standardid=	$("#standardsforassigngroup :selected").attr('data-standardid')
+				 wantedForVocationalGroupAssignment[standardid]=JSON.parse(data)[standardid];
+					$("#vocationalgrouplists input[type='checkbox']").iCheck('uncheck');
+					$("#vocationalgrouplists input[type=checkbox]").attr("data-derivedcompareid","");
+					var standardId=standardid
+					var vocationalGroupArray= wantedForVocationalGroupAssignment[standardId];
+					var size=vocationalGroupArray.length;
+					if(size!=0){
+						for(var i=0;i<size;i++){
+							var baseGroupCompareId=vocationalGroupArray[i].basegroupcompareid;
+							var derivedcompareid=vocationalGroupArray[i].derivedcompareid;
+							var status=vocationalGroupArray[i].status;
+							$("input[data-basegroupcompareid="+baseGroupCompareId+"]").attr("data-derivedcompareid",derivedcompareid);
+							if(status){
+								$("input[data-basegroupcompareid="+baseGroupCompareId+"]").iCheck('check');
+							}
+						}
+					}
+			alert(data);
+			},
+			error:function(){
+				
+			}
+		})
+	}else{
+		return false;
+	}
+	})
+	$("#openstandardform").click(function () {
+	    $("#openstandardform").addClass('no-display');
+	    $("#addnewip").removeClass('no-display');
+	    $("#bcktocreate").removeClass('no-display');
+
+	});
+	$("#bcktocreate").click(function () {
+	    $("#openstandardform").removeClass('no-display');
+	    $("#addnewip").addClass('no-display');
+	    $("#bcktocreate").addClass('no-display');
+	});
+	$("i[data-name=subjectdelete]").click(function(event){
+		var basesubjectid=this.dataset.basesubjectid;
+		var sectionid=this.dataset.sectionid;
+		var standardid=this.dataset.standardid
+		alert("base "+basesubjectid+"section "+sectionid+"standard"+standardid)
+		var deleteparameters=
+		{
+			"basesubjectid":basesubjectid,
+			"sectionid":sectionid,
+			"standardid":standardid
+		}
+		$.ajax({
+			type:"post",
+			data:JSON.stringify(deleteparameters),
+			contentType: 'application/json',
+			url:"/fcds/settings/delte-subject-assignment",
+			success:function(data){
+				var deleteParameters= JSON.parse(data);
+				$("#assignedsubjects li[data-standardid="+deleteParameters.standardid+"][data-sectionid="+deleteParameters.sectionid+"][data-basesubjectid="+deleteParameters.basesubjectid+"]").remove();
+				alert("deleted successfully");
+			},
+			error:function(){
+				
+			}
+			
+		});
+		
+		
+		
+	})
+	
+
 });
 $(document).on("ifClicked", "#standardsHead input[type=checkbox]",
 		function(event) {
@@ -314,70 +572,109 @@ function enableOrdisableSectionStandards(){
 	
 }
 $(document).on('click','#saveSecitons',function(event){
-var allRadioBoxElements=$("#sectionStandardsTab input[type=radio]");
-$(allRadioBoxElements).each(function(radiokey,radiovalue){
-	
-	var standardid=  $(this).data('standardid');
-	var sectionElememts=$(this).parent().parent().parent().nextAll('div[class="input_fields_wrap"]').children();
-	var maximumstudentElement=$(this).parent().parent().parent().nextAll('div [data-div=sectionsize]').children('input[data-sectionsize=size]');
-	var sectionSize=$(maximumstudentElement).val();
-	if(sectionSize=="" && sectionElememts.length!=0){
+var groupEnabledStandards=$("div [class=row][data-isgroupenabled=true]");
+var groupDisabledStandards=$("div [class=row][data-isgroupenabled=false]");
+		groupEnabledStandards.each(function(key,val){
+			
+		var standardId=$(val).data('standardid');
+		var groupsLists=$("div[data-name=sectionrow][data-standardid="+standardId+"]")
+		groupsLists.each(function(k,v){
+			var groupcompareid=$(this).children('div [data-ishavinggroup=yes]').data('groupcompareid');
+			var sectionElememts=$(this).children('div [class=input_fields_wrap]').children();
+			var maximumstudentElement=$(this).children('div [data-div=sectionsize]').children('input[data-sectionsize=size]');
+			var sectionSize=$(maximumstudentElement).val();
+			if(sectionSize=="" && sectionElememts.length!=0)
+			{
+				$(maximumstudentElement).focus();
+				$(maximumstudentElement).css('border','solid red');
+				flagForCheckEmpty=true;
+			}
+			sectionArray=	getClassSectionsOfStandard(sectionElememts,sectionSize)
+			var sectionArrayCopyObj = jQuery.extend( [], sectionArray);
+			groupsections[groupcompareid]=sectionArrayCopyObj;
+			sectionArray=[];
+			
+		});
+		var grousectionCopyObj = jQuery.extend( {}, groupsections);
+		sectionsForStandards[standardId]=grousectionCopyObj;
+		groupsections=new Object();
 		
+		});
+		
+		groupDisabledStandards.each(function(key,val){
+			var standardId=$(val).data('standardid');
+			var groupsLists=$("div[data-name=sectionrow][data-standardid="+standardId+"]")
+			groupsLists.each(function(k,v){
+				var groupcompareid=$(this).children('div [data-ishavinggroup=yes]').data('groupcompareid');
+				var sectionElememts=$(this).children('div [class=input_fields_wrap]').children();
+				var maximumstudentElement=$(this).children('div [data-div=sectionsize]').children('input[data-sectionsize=size]');
+				var sectionSize=$(maximumstudentElement).val();
+				if(sectionSize=="" && sectionElememts.length!=0)
+				{
+					$(maximumstudentElement).focus();
+					$(maximumstudentElement).css('border','solid red');
+					flagForCheckEmpty=true;
+				}
+				sectionArray=	getClassSectionsOfStandard(sectionElememts,sectionSize)
+				var sectionArrayCopyObj = jQuery.extend( [], sectionArray);
+				sectionsForStandards[standardId]=sectionArrayCopyObj;
+				sectionArray=[];
+			
+			});
+			
+		})
+
+
+var allSectionRowElements=$("#sectionStandardsTab div[data-name=sectionrow]");
+/*$(allSectionRowElements).each(function(radiokey,radiovalue){
+	var standardid=  $(this).data('standardid');
+	//groupsections=new Object();
+	var sectionElememts=$(this).children('div [class=input_fields_wrap]').children();
+	var maximumstudentElement=$(this).children('div [data-div=sectionsize]').children('input[data-sectionsize=size]');
+	var sectionSize=$(maximumstudentElement).val();
+	if(sectionSize=="" && sectionElememts.length!=0)
+	{
 		$(maximumstudentElement).focus();
 		$(maximumstudentElement).css('border','solid red');
 		flagForCheckEmpty=true;
 	}
 
-	
-	$(sectionElememts).each(function(sectionkey,sectionval){
-		var sectionName=$(this).find('input[data-sectionname=section]').val();
-		if(sectionName=="" ){
-			
-			flagForCheckEmpty=true;
-			$(this).find('input').css('border','solid green');
-			$(this).find('input').focus();
-			sectionArray=[];
-			section={sectionId:"",sectionName:"",maximumStudents:0};
-			return  ;
-			
-			event.preventDefault();
-			return  ;
+	if($(this).children('div [data-ishavinggroup=yes]').length!=0){
+		var groupcompareid=$(this).children('div [data-ishavinggroup=yes]').data('groupcompareid');
+		if(groupcompareid!=0){
+			sectionArray=getClassSectionsOfStandard(sectionElememts);
+			var sectionArrayCopyObj = jQuery.extend( [], sectionArray);
+			groupsections[groupcompareid]=sectionArrayCopyObj;
 		}
-		else
-		{
-			if(typeof sectionName!="undefined"){
-				section.sectionName=sectionName.toUpperCase();
-			}
-	
-			if(typeof sectionSize!="undefined"){
-				section.maximumStudents=sectionSize;
-			}
-		
-			
-		var indexId=$(this).find("input[name='indexId']").val();
-				if(indexId!="" && indexId!=0){
-					section.compareId=indexId;
-				}else{
-					//section.indexId=0;
-				}
-		sectionArray.push(section);
-		section={sectionId:"",sectionName:"",maximumStudents:0};
-		}
-	})
-	sectionsForStandards[standardid]=sectionArray;
-	sectionArray=[];
-})
+		var grousectionCopyObj = jQuery.extend( {}, groupsections);
+		sectionsForStandards[standardid]=grousectionCopyObj;
+		groupsections=new Object();
+		sectionArray=[];
+	}else{
+		groupsections=new Object();
+		sectionArray=getClassSectionsOfStandard(sectionElememts);
+		var sectionArrayCopyObj = jQuery.extend( [], sectionArray);
+		sectionsForStandards[standardid]=sectionArrayCopyObj;
+		sectionArray=[];
+	}
+});*/
+
 	console.log(sectionsForStandards);
 if(flagForCheckEmpty){
 	flagForCheckEmpty=false;
+	sectionsForStandards=new Object();
+	sectionArray=[];
+	groupsections=new Object();
 	return ;
 }else{
 	var wrappedSectionData=JSON.stringify(sectionsForStandards);
 	encodeURI()
-	 var url="/fcds/settings/saveSections?wrappedSectionData="+JSON.stringify(sectionsForStandards)
+	 var url="/fcds/settings/saveSections/"
 	// encodeURI(url);
-	   // $('#sectionDefinitionForm').attr('method','post');
-	    $('#sectionDefinitionForm').attr('action', encodeURI(url)).submit();
+		// alert(JSON.stringify(sectionsForStandards))
+	    $('#sectionDefinitionForm').attr('method','post');
+	   $("#sectionDefinitionForm").append("<input type='hidden' name='customParameter' value='"+JSON.stringify(sectionsForStandards)+"' />");
+	   $('#sectionDefinitionForm').attr('action', encodeURI(url)).submit();
 	 return false; //
 	
 }
@@ -418,6 +715,7 @@ $(document).on("click", "#savesubject", function() {
         	   console.log(v);
         	   sectionDeclaratonTable.fnAddData(tableDatas); 
            });*/
+		    $("#subjectDeclartionForm").reset();
            tableDatas="";
           // sectionDeclaratonTable.fnAddData(responseData); 
 		},
@@ -446,15 +744,38 @@ function deleteSection(deleteParamerters){
 var findNumBtwn=function(a,b,c,d){d=[];c=b-a+1;while(c--){d[c]=b--}return d}
 function loadSection(){
 	var standardId=$("#standardList option:first").data('standardid');
+	var isgroupAssigned=$("#standardList option:first").data('groupassigned');
+	if(isgroupAssigned==true){
+		$("div [data-name=vocationalgroupdiv]").css("display","")
+		var vocationalGroups= wantedForGroupSubjectAssignment[standardId];
+		var options='';
+		Object.keys(vocationalGroups).forEach(function(vocatinalgroupid,v){
+			var groupName=wantedForGroupMetaInfo[vocatinalgroupid].groupname;	
+			options+="<option data-standardid="+standardId+" data-vocationalgroupid="+vocatinalgroupid+" value="+groupName+">"+groupName+"</option>"
+			})
+			$('#vocationalgroupselect option[value!="111"]').remove();
+			$('#vocationalgroupselect option[value="111"]').attr("data-standardid",standardId);
+			$("#vocationalgroupselect").append(options)
+			$('#sectionList option[value!="111"]').remove();
+	}else{
+		
+	
+	if(typeof standardId !="undefined"){
 	var optionsArray=wantedForSubjectAssignment[standardId];
 	var options='';
 		for(var t=0;t<optionsArray.length;t++){
-		options+="<option data-sectionid="+optionsArray[t].sectionId+" value="+optionsArray[t].sectionName+">"+optionsArray[t].sectionName+"</option>"
+		options+="<option data-standardid="+standardId+" data-sectionid="+optionsArray[t].sectionId+" value="+optionsArray[t].sectionName+">"+optionsArray[t].sectionName+"</option>"
 		}
 		$('#sectionList option[value!="111"]').remove();
+		$('#sectionList option[value="111"]').attr('data-standardid',standardId);
 		$('#sectionList').append(options)
+	}
 	
+	}
 }
+
+
+
 
 	/*
 	 * $("#standardsHead input").change(function(){
@@ -494,3 +815,40 @@ function loadSection(){
 		
 	}
 });*/
+
+function getClassSectionsOfStandard(sectionElememts,sectionSize){
+	$(sectionElememts).each(function(sectionkey,sectionval){
+		var sectionName=$(this).find('input[data-sectionname=section]').val();
+		if(sectionName=="" )
+		{
+			flagForCheckEmpty=true;
+			$(this).find('input').css('border','solid green');
+			$(this).find('input').focus();
+			sectionArray=[];
+			section={sectionId:"",sectionName:"",maximumStudents:0};
+			return  ;
+			
+			event.preventDefault();
+			return  ;
+		}
+		else
+		{
+			if(typeof sectionName!="undefined"){
+				section.sectionName=sectionName.toUpperCase();
+			}
+			if(typeof sectionSize!="undefined"){
+				section.maximumStudents=sectionSize;
+			}
+		var indexId=$(this).find("input[name='indexId']").val();
+				if(indexId!="" && indexId!=0){
+					section.compareId=indexId;
+				}else{
+					//section.indexId=0;
+				}
+		sectionArray.push(section);
+	
+		section={sectionId:"",sectionName:"",maximumStudents:0};
+		}
+	})
+	return sectionArray;
+}

@@ -5,6 +5,7 @@ pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://www.atg.com/taglibs/json"  prefix="json"%>
     
   <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
   <html>
@@ -17,6 +18,7 @@ pageEncoding="ISO-8859-1"%>
 		<meta content="" name="description">
 		<meta content="" name="author">
 		<tiles:insertAttribute name="cssfiles"/>
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/mixcss.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 
@@ -53,7 +55,33 @@ pageEncoding="ISO-8859-1"%>
 										</a>
 									</div>
 								</div>
-							<div class="panel-body">
+					<div style="display: none;" id="boysjsondiv">
+						<json:array name="boysList" var="academicianinfo"
+							items="${setDef.academicianInfoSet}" prettyPrint="true">
+							<c:if test="${academicianinfo.academicianGender==\"MALE\"}">
+								<json:property name="compareId"
+									value="${academicianinfo.compareId}"></json:property>
+							</c:if>
+						</json:array>
+					</div>
+					<div style="display: none;" id="girlsjsondiv">
+						<json:array name="girlslist" var="academicianinfo"
+							items="${setDef.academicianInfoSet}" prettyPrint="true">
+							<c:if test="${academicianinfo.academicianGender==\"FEMALE\"}">
+								<json:property name="compareId"
+									value="${academicianinfo.compareId}"></json:property>
+							</c:if>
+						</json:array>
+					</div>
+					<div style="display: none;" id="bothjsondiv">
+						<json:array name="bothlist" var="academicianinfo"
+							items="${setDef.academicianInfoList}" prettyPrint="true">
+						
+								<json:property name="compareId"
+									value="${academicianinfo.compareId}"></json:property>
+						</json:array>
+					</div>
+					<div class="panel-body">
                             
                             <div class="row"><!-- row -->
                             <!-- tab -->
@@ -105,10 +133,12 @@ pageEncoding="ISO-8859-1"%>
 														Select Standard Name <span class="symbol required"></span>
 													</label>
 																<select class="form-control" name="standardId" id="standardId">
+																<option value="111" ><big>Select</big></option>
 															 <c:forEach var="standardDef"
 																items="${schoolMasterDataDefinition.schoolStandardsDefnition}"
 																varStatus="standardLoop1">
-																<c:if test="${standardDef.statusForChecked==true}">
+																 <c:set var="noofsections" value="${fn:length(standardDef.sectionSet)}" />
+																<c:if test="${standardDef.statusForChecked==true && noofsections!=0}">
 																<option value="${standardLoop1.index+1}" data-standardid="${standardDef.standardId}"><big>${standardDef.standardName}</big></option>
 																	  </c:if>
 													       </c:forEach>
@@ -128,7 +158,20 @@ pageEncoding="ISO-8859-1"%>
                                                    </div>                                       
 									  </div>
 									  </form>
-									</div>  
+									</div> 
+									 <hr>
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                    <h5>Total No.of Admission Students are : <label class="label label-info">${fn:length(setDef.academicianInfoSet)}</label>                                    </h5></div>
+                                    </div>
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                    <h5>Total No.of Male Students are : <label class="label label-info" id="boyscount"></label>                                    </h5></div>
+                                    </div>
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                    <h5>Total No.of Female Students are : <label class="label label-info" id="girlscount"></label>                                    </h5></div>
+                                    </div> 
                                     <div class="row">
                                     <div class="col-md-12">
                                     No.of Section are 
@@ -141,8 +184,10 @@ pageEncoding="ISO-8859-1"%>
 												<c:forEach items="${standardDef.sectionSet}" var="sectionDef" varStatus="incrementor">
 														<label class="checkbox-inline">
 														<input type="checkbox" class="flat-green" value=""  data-sectionid="${sectionDef.sectionId}">
-															<big>${sectionDef.sectionName}</big>
-														</label> 
+														<input type="hidden" id="sectionstrength"  value="${sectionDef.maximumStudents}"  >
+															<big data-sectionid="${sectionDef.sectionId}">${sectionDef.sectionName}</big>
+														<c:out value="" ></c:out>
+														</label>
 											</c:forEach>
 									   </c:if>
 								</div></c:if>
@@ -151,11 +196,22 @@ pageEncoding="ISO-8859-1"%>
                                         </div>
                                     </div>
                                     </div>
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                   
+                                    <h5>Section strength Value / per Section : <label class="label label-info" data-display="displaySectionstrength"></label>  </h5></div>
+                                    </div>
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                    <h5>Status : <label class="label label-success">Fine</label>--- OR ---<label class="label label-danger">Bad</label></h5></div>
+                                    </div>
+                                    <hr>
 <!-- start: FORM CA Result PANEL -->                    	
-                   <form:form modelAttribute="setDef">
+                   <form:form modelAttribute="setDef" id="sectionAllocationForm" method="post">
                    <c:set var="totalboys" value="0" scope="page" />
                    <c:set var="totalgirls" value="0" scope="page"/>
                             <!--Result Table-->
+         <div style="width: auto; max-height: 30em; height: 100%;overflow-y: auto; overflow-style:marquee-line;">    
                             <table class="table table-hover" id="sectionAssignTable">
 										<thead>
 											<tr>
@@ -163,6 +219,7 @@ pageEncoding="ISO-8859-1"%>
 												<th>Student Name</th>
 												<th>Admission No</th>
 												<th>Gender</th>
+												<th>Class Section </th>
 												<th class="center">More</th>
 											</tr>
 										</thead>
@@ -170,17 +227,17 @@ pageEncoding="ISO-8859-1"%>
 										
 											<c:forEach items="${setDef.academicianInfoSet}" var="studentStds" varStatus="incrementor">
 											<tr>
+											<input type="hidden" name="studentinfopool" data-studentid="${studentStds.compareId}" data-gender="${studentStds.academicianGender}" data-studentname="${studentStds.academicianFirstName}"/>
 											<form:hidden path="academicianInfoSet[${incrementor.index}].academicianId"/>
 										    <form:hidden path="academicianInfoSet[${incrementor.index}].academicanStandardId"/>
-											<form:hidden path="academicianInfoSet[${incrementor.index}].academicanStandrdName"/>
-											<form:hidden path="academicianInfoSet[${incrementor.index}].academicianSection"/>
 											<form:hidden path="academicianInfoSet[${incrementor.index}].academicianSectionId"/>
 											<form:hidden path="academicianInfoSet[${incrementor.index}].compareId"/> 
 											
 												<td class="center" data-index="index" >${incrementor.index+1}</td>
 												<td>${studentStds.academicianName}</td>
-								 		<td>${studentStds.academicianId}</td>
+								 				<td>${studentStds.academicianId}</td>
 												<td data-gender="${studentStds.academicianGender}"><big>${studentStds.academicianGender}</big></td>
+												<td>${studentStds.academicianSectionName}</td>
 												<c:if test="${studentStds.academicianGender==\"MALE\"}">
 												 <c:set var="totalboys" value="${totalboys+1}" scope="page" />
 												</c:if>
@@ -192,8 +249,10 @@ pageEncoding="ISO-8859-1"%>
                                                 </td>
 											</tr>
 											</c:forEach>
+											
 										</tbody>
 									</table>
+									</div>
                                     <!--/ Result Table-->
                                     <hr>
                                     <div class="row">
@@ -201,51 +260,157 @@ pageEncoding="ISO-8859-1"%>
                                         Select Rule <span class="symbol required"></span>
                                       </div>                                    
                                     </div>
-						<div class="row">
-									  <div class="col-xs-6 col-sm-3">
-                                     <center>
+									<div class="row">
+									  <div class="col-md-6 col-md-offset-3">
+                                     
                                       <label class="radio-inline">
-										<input type="radio" class="square-red" value="" checked="checked" name="optionsRadios11">
-										FCFS
-									</label>
-                                    </center>
+										<input type="radio" class="square-red" value="" data-allocateby="111" checked="checked" name="rules">FCFS</label>
                                       </div>
-									  <div class="col-xs-6 col-sm-3">
+                                </div>
+                                <br>
+                                <div class="row">
+									  <div class="col-md-6 col-md-offset-3">
+                                      
                                       <label class="radio-inline">
-										<input type="radio" class="square-red" value="" checked="checked" name="optionsRadios11">
-										Ratio
-									</label>
+										<input type="radio" class="square-red" value=""  data-allocateby="222" checked="checked" name="rules">FCFS (Separate)</label>
                                       </div>
-									  <div class="col-xs-6 col-sm-3">
+                                       </div>
+                                       <br>
+                                <div class="row">
+									  <div class="col-md-6 col-md-offset-3">
                                       <label class="radio-inline">
-										<input type="radio" class="square-red" value="" checked="checked" name="optionsRadios11">
-										Rule 3
-									</label>
-                                      </div>
-									  <div class="col-xs-6 col-sm-3">
-                                      <label class="radio-inline">
-										<input type="radio" class="square-red" value="" checked="checked" name="optionsRadios11">
-										Rule 4
-									</label>                                      
+										<input type="radio" class="square-red" value=""  data-allocateby="333"  name="rules">Ratio</label><input type="number" min="0" max="99" size="2" id="bratio" placeholder="B">&nbsp;<big>:</big>&nbsp;<input type="number" min="0"  id="gratio" max="99" size="2" placeholder="G">
                                       </div>
 						</div>        
-                                    <hr>
-									<div class="row">
-											<div class="col-md-8">
+                                    <hr>         
+										<div class="row">
+                                    <div class="col-md-4">
+                                    </div>
+											<div class="col-md-4">
 												<p>
+                                                <a class="btn btn-info btn-block" type="button" href="#pre_model" data-toggle="modal">
+													Preview 
+												</a>
 												</p>
 											</div>
+                                            
 											<div class="col-md-4">
-												<button class="btn btn-success btn-block" type="submit">
-													Preview 
-												</button>
+												
+												<button class="btn btn-success btn-block" type="submit" id="sectionAllocationSubmit">
+													Submit
+												</button>                                                
 											</div>
 										</div>
 										 <input type="hidden" id="noofacdemician" value="${fn:length(setDef.academicianInfoSet)}"></input>
 										  <input type="hidden" id="totalboys" value="${totalboys}"></input>
 										   <input type="hidden" id="totalgirls" value="${totalgirls}"></input> 
-									</form:form>                                							               
-
+									</form:form>     
+									<!--start mix code-->
+								                <div id="mix_div">
+								                            <div class="controls">
+								  <label>Section:</label>
+								  
+								 <!--  <button class="sort-btn" data-dimension="type" data-sort="">A</button>
+								  <button class="sort-btn" data-dimension="type" data-sort="">B</button>
+								  <button class="sort-btn" data-dimension="type" data-sort="">C</button> -->
+								  
+								  <label>Sort:</label>
+								  <button class="filter-btn" data-dimension="manufacturer" data-filter=".MALE" id="getmale">Male</button>
+								  <button class="filter-btn" data-dimension="manufacturer" data-filter=".FEMALE" id="getfemale">Female</button>
+								  <button class="filter-btn" data-dimension="manufacturer" data-filter="all" id="all">All</button>
+								  <!-- <button class="sort" data-sort="myorder:asc">Asc</button>
+								  <button class="sort" data-sort="myorder:desc">Desc</button> -->
+								</div>
+								<div id="Container_mix" class="container_mix">
+								<!--   <div class="mix A gmale" data-myorder="1"></div>
+								  <div class="mix A" data-myorder="2" ></div>
+								  <div class="mix B" data-myorder="3"></div>
+								  <div class="mix B" data-myorder="4"></div>
+								  <div class="mix C" data-myorder="5"></div>
+								  <div class="mix A gfemale" data-myorder="6"></div>
+								  <div class="mix C gmale" data-myorder="7"></div>
+								  <div class="mix B" data-myorder="8"></div>
+								  <div class="mix A gmale" data-myorder="9"></div>
+								  <div class="mix C gfemale" data-myorder="10"></div>
+								  <div class="mix C gfemale" data-myorder="11"></div>
+								  <div class="mix A" data-myorder="12"></div>
+								  <div class="mix B gmale" data-myorder="13"></div>
+								  <div class="mix B" data-myorder="14"></div> 
+								  <div class="mix A" data-myorder="16"></div>
+								  <div class="mix C" data-myorder="15"></div>
+								  <div class="mix A" data-myorder="17"></div>
+								  <div class="mix B gmale" data-myorder="18"></div>     -->    
+								  
+								  <div class="gap"></div>
+								  <div class="gap"></div>
+								</div>
+												</div> 
+                            <!--end mix code-->       
+                            <!-- start: PANEL CONFIGURATION MODAL FORM -->                    							               
+<div class="modal fade" id="pre_model" tabindex="-1" role="model" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+									&times;
+								</button>
+								<h4 class="modal-title">Panel Configuration</h4>
+							</div>
+							<div class="modal-body">
+                           <!--  <div id="mix_div">
+								                            <div class="controls">
+								  <label>Section:</label>
+								  
+								  <button class="sort-btn" data-dimension="type" data-sort=".A">A</button>
+								  <button class="sort-btn" data-dimension="type" data-sort=".B">B</button>
+								  <button class="sort-btn" data-dimension="type" data-sort=".C">C</button>
+								  
+								  <label>Sort:</label>
+								  <button class="filter-btn" data-dimension="manufacturer" data-filter=".MALE" id="getmale">Male</button>
+								  <button class="filter-btn" data-dimension="manufacturer" data-filter=".FEMALE" id="getfemale">Female</button>
+								  <button class="filter-btn" data-dimension="manufacturer" data-filter="all" id="all">All</button>
+								  <button class="sort" data-sort="myorder:asc">Asc</button>
+								  <button class="sort" data-sort="myorder:desc">Desc</button>
+								</div>
+								<div id="Container_mix" class="container_mix">
+								  <div class="mix A gmale" data-myorder="1"></div>
+								  <div class="mix A" data-myorder="2" ></div>
+								  <div class="mix B" data-myorder="3"></div>
+								  <div class="mix B" data-myorder="4"></div>
+								  <div class="mix C" data-myorder="5"></div>
+								  <div class="mix A gfemale" data-myorder="6"></div>
+								  <div class="mix C gmale" data-myorder="7"></div>
+								  <div class="mix B" data-myorder="8"></div>
+								  <div class="mix A gmale" data-myorder="9"></div>
+								  <div class="mix C gfemale" data-myorder="10"></div>
+								  <div class="mix C gfemale" data-myorder="11"></div>
+								  <div class="mix A" data-myorder="12"></div>
+								  <div class="mix B gmale" data-myorder="13"></div>
+								  <div class="mix B" data-myorder="14"></div> 
+								  <div class="mix A" data-myorder="16"></div>
+								  <div class="mix C" data-myorder="15"></div>
+								  <div class="mix A" data-myorder="17"></div>
+								  <div class="mix B gmale" data-myorder="18"></div>        
+								  
+								  <div class="gap"></div>
+								  <div class="gap"></div>
+								</div>
+												</div> -->
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">
+									Close
+								</button>
+								<button type="button" class="btn btn-primary">
+									Save changes
+								</button>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+					<!-- /.modal-dialog -->
+				</div>
+				<!-- /.modal -->
 <!-- end: FORM CA Result PANEL -->                            
                                                                               
 											<!-- / tab 1 msg-->                                                    
@@ -784,6 +949,7 @@ pageEncoding="ISO-8859-1"%>
   <tiles:insertAttribute name="footer" />
   <tiles:insertAttribute name="jsfiles" />
   <script  src="${pageContext.request.contextPath}/resources/applicationjs/academicoperations.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/js/jquery.mixitup.js"></script>
   
 </body>
 </html>

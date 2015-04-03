@@ -8,6 +8,7 @@ package com.solutiontag.entity.academic;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,13 +47,13 @@ public class AcademicianInfo extends ApplicationPrimaryClass implements Serializ
 
   public AcademicianInfo() {
     this.academicianId=hashCode();
-    this.academicianAddress=new AcademicianAddress();
+   /* this.academicianAddress=new AcademicianAddress();
     this.academicianAddress.setAcademicianInfo(this);
-    this.setAcademicianAddress(academicianAddress);
+    this.setAcademicianAddress(academicianAddress);*/
     
-    this.academicianPreviousSchoolDetails=new AcademicianPreviousSchoolDetails();
+   /* this.academicianPreviousSchoolDetails=new AcademicianPreviousSchoolDetails();
     this.academicianPreviousSchoolDetails.setAcademicianInfo(this);
-    this.setAcademicianPreviousSchoolDetails(academicianPreviousSchoolDetails);
+    this.setAcademicianPreviousSchoolDetails(academicianPreviousSchoolDetails);*/
   }
 
   @Id
@@ -69,7 +70,7 @@ public class AcademicianInfo extends ApplicationPrimaryClass implements Serializ
   private Integer academicianAdmissionNumber;
   
   @Column(name="academicianAdmissionDate")
-  private Date academicianAdmissionDate;
+  private Timestamp academicianAdmissionDate;
   
   @Column(name="academicianname")
   private String academicianName;
@@ -116,14 +117,17 @@ public class AcademicianInfo extends ApplicationPrimaryClass implements Serializ
   @Column(name="academicianstandardid")
   private Integer academicanStandardId;
   
-  @Column(name="academicanstandardname")
-  private String academicanStandrdName;
+  @Column(name="academicianJoiningEducationBoard")
+  private String academicianJoiningEducationBoard;  
   
-  @Column(name="academiciansection")
-  private String academicianSection;
+  @Column(name="academicianstandardname")
+  private String academicianStandardName;
   
   @Column(name="academicianSectionId")
   private Integer academicianSectionId;
+  
+  @Column(name="academiciansectionname")
+  private String academicianSectionName;
   
   @Column(name="isnewadmission")
   private boolean isNewAdmission;
@@ -347,20 +351,6 @@ public class AcademicianInfo extends ApplicationPrimaryClass implements Serializ
   }
 
   /**
-   * @return the academicianAdmissionDate
-   */
-  public Date getAcademicianAdmissionDate() {
-    return academicianAdmissionDate;
-  }
-
-  /**
-   * @param academicianAdmissionDate the academicianAdmissionDate to set
-   */
-  public void setAcademicianAdmissionDate(Date academicianAdmissionDate) {
-    this.academicianAdmissionDate = academicianAdmissionDate;
-  }
-
-  /**
    * @return the academicianHasSibling
    */
   public boolean isAcademicianHasSibling() {
@@ -488,34 +478,6 @@ public class AcademicianInfo extends ApplicationPrimaryClass implements Serializ
   }
 
   /**
-   * @return the academicanStandrdName
-   */
-  public String getAcademicanStandrdName() {
-    return academicanStandrdName;
-  }
-
-  /**
-   * @param academicanStandrdName the academicanStandrdName to set
-   */
-  public void setAcademicanStandrdName(String academicanStandrdName) {
-    this.academicanStandrdName = academicanStandrdName;
-  }
-
-  /**
-   * @return the academicianSection
-   */
-  public String getAcademicianSection() {
-    return academicianSection;
-  }
-
-  /**
-   * @param academicianSection the academicianSection to set
-   */
-  public void setAcademicianSection(String academicianSection) {
-    this.academicianSection = academicianSection;
-  }
-
-  /**
    * @return the academicianSectionId
    */
   public Integer getAcademicianSectionId() {
@@ -571,5 +533,60 @@ public class AcademicianInfo extends ApplicationPrimaryClass implements Serializ
     this.academicianGurdianInfo = academicianGurdianInfo;
   }
 
+  /**
+   * @return the academicianAdmissionDate
+   */
+  public Timestamp getAcademicianAdmissionDate() {
+    return academicianAdmissionDate;
+  }
+
+  /**
+   * @param academicianAdmissionDate the academicianAdmissionDate to set
+   */
+  public void setAcademicianAdmissionDate(Timestamp academicianAdmissionDate) {
+    this.academicianAdmissionDate = academicianAdmissionDate;
+  }
+
+  /**
+   * @return the academicianStandardName
+   */
+  public String getAcademicianStandardName() {
+    return academicianStandardName;
+  }
+
+  /**
+   * @param academicianStandardName the academicianStandardName to set
+   */
+  public void setAcademicianStandardName(String academicianStandardName) {
+    this.academicianStandardName = academicianStandardName;
+  }
+
+  /**
+   * @return the academicianSectionName
+   */
+  public String getAcademicianSectionName() {
+    return academicianSectionName;
+  }
+
+  /**
+   * @param academicianSectionName the academicianSectionName to set
+   */
+  public void setAcademicianSectionName(String academicianSectionName) {
+    this.academicianSectionName = academicianSectionName;
+  }
+
+  /**
+   * @return the academicianJoiningEducationBoard
+   */
+  public String getAcademicianJoiningEducationBoard() {
+    return academicianJoiningEducationBoard;
+  }
+
+  /**
+   * @param academicianJoiningEducationBoard the academicianJoiningEducationBoard to set
+   */
+  public void setAcademicianJoiningEducationBoard(String academicianJoiningEducationBoard) {
+    this.academicianJoiningEducationBoard = academicianJoiningEducationBoard;
+  }
 
 }

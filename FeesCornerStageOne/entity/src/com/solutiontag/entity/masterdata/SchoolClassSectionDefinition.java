@@ -61,9 +61,17 @@ public class SchoolClassSectionDefinition extends ApplicationPrimaryClass implem
   @JoinColumn(name="standard_id")
   private SchoolStandardsDefnition schoolStandardsDefnition;
   
+  @ManyToOne(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
+  @JoinColumn(name="groupid")
+  private SchoolVocationalGroupDefinitionAssignment schoolVocationalGroup;
+  
   @Fetch(FetchMode.JOIN)
   @OneToMany(cascade=CascadeType.ALL,mappedBy="schoolClassSection",orphanRemoval=true)
   private Set<SchoolSubjectsDefinitionAssignment> schoolSubjectAssignmentSet=new HashSet<SchoolSubjectsDefinitionAssignment>();
+  
+  @Fetch(FetchMode.JOIN)
+  @OneToMany(cascade=CascadeType.ALL,mappedBy="schoolClassSection",orphanRemoval=true)
+  private Set<SchoolFeesDefinitionAssignment> schoolFeesDefinitionAssignmentSet=new HashSet<SchoolFeesDefinitionAssignment>();
   
   @Transient
   private List<SchoolSubjectsDefinitionAssignment> schoolSubjectAssignmentList=new ArrayList<SchoolSubjectsDefinitionAssignment>();
@@ -154,5 +162,34 @@ public class SchoolClassSectionDefinition extends ApplicationPrimaryClass implem
     this.schoolSubjectAssignmentList = schoolSubjectAssignmentList;
   }
 
+  /**
+   * @return the schoolFeesDefinitionAssignmentSet
+   */
+  public Set<SchoolFeesDefinitionAssignment> getSchoolFeesDefinitionAssignmentSet() {
+    return schoolFeesDefinitionAssignmentSet;
+  }
 
+  /**
+   * @param schoolFeesDefinitionAssignmentSet the schoolFeesDefinitionAssignmentSet to set
+   */
+  public void setSchoolFeesDefinitionAssignmentSet(
+      Set<SchoolFeesDefinitionAssignment> schoolFeesDefinitionAssignmentSet) {
+    this.schoolFeesDefinitionAssignmentSet = schoolFeesDefinitionAssignmentSet;
+  }
+
+  /**
+   * @return the schoolVocationalGroup
+   */
+  public SchoolVocationalGroupDefinitionAssignment getSchoolVocationalGroup() {
+    return schoolVocationalGroup;
+  }
+
+  /**
+   * @param schoolVocationalGroup the schoolVocationalGroup to set
+   */
+  public void setSchoolVocationalGroup(SchoolVocationalGroupDefinitionAssignment schoolVocationalGroup) {
+    this.schoolVocationalGroup = schoolVocationalGroup;
+  }
+
+ 
 }

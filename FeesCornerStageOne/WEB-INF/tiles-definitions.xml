@@ -4,6 +4,8 @@
         "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 <tiles-definitions>
 
+		
+
     <definition name="homescreen" template="/viewpages/homescreen.jsp">
         <put-attribute name="header" value="/tilesjsp/header/header.jsp" />
         <put-attribute name="leftmenu" value="/tilesjsp/menu/leftmenu.jsp" />
@@ -24,17 +26,24 @@
     <definition name="academicmasterdatascreen" extends="homescreen" template="/viewpages/settings/academicmasterdatascreen.jsp">
         <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
     </definition>
+     <definition name="nonacademicmasterdatascreen" extends="homescreen" template="/viewpages/settings/nonacademicmasterdata.jsp">
+        <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
+    </definition>
     <definition name="academicianoperation" extends="homescreen" template="/viewpages/academics/academicianoperations.jsp">
         <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
     </definition>
+      <definition name="financesettingsscreen" extends="homescreen" template="/viewpages/finanace/finanancesettings.jsp">
+        <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
+    </definition>
     
-     <definition name="studentinfoscreen" extends="homescreen" template="/viewpages/academics/studentinfo.jsp">
+     <definition name="admissionscreen" extends="homescreen" template="/viewpages/academics/admission.jsp">
         <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
     </definition>
       <definition name="loginpage" extends="homescreen" template="/viewpages/mastermodule/adminlogin.jsp">
         <put-attribute name="loginpanelconfig" value="/tilesjsp/body/loginpanelconfig.jsp" />
     </definition>
     
+  
   
 <!--     <definition name="adminmainpage" template="/viewpages/mastermodule/adminmainpage.jsp">
         <put-attribute name="header" value="/tilesjsp/header/header.jsp" />
@@ -65,7 +74,7 @@
     <definition name="dummysettings" template="/dynamicpage/dummysettings.jsp" />
     <definition name="standardform" template="/dynamicpage/standardform.jsp" />
     <definition name="subjectform" template="/dynamicpage/subjectform.jsp" />
-        <definition name="nonacademicmasterdatascreen" template="/dynamicpage/nonacademicmastertest.jsp" />
+        <definition name="nonacademicmasterdatascreentest" template="/dynamicpage/nonacademicmastertest.jsp" />
     
     
 

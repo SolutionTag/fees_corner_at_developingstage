@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashSet;
@@ -175,4 +177,26 @@ public static Timestamp getRandomTimeBetweenTwoDates () {
     gsonbuilder.setExclusionStrategies(exs);
     return gsonbuilder.serializeNulls().create();
 }
+ 
+ 
+ /** Get CPU time in nanoseconds. */
+ public static long getCpuTime( ) {
+     ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
+     return bean.isCurrentThreadCpuTimeSupported( ) ?
+         bean.getCurrentThreadCpuTime( ) : 0L;
+ }
+
+ /** Get user time in nanoseconds. */
+ public static long getUserTime( ) {
+     ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
+     return bean.isCurrentThreadCpuTimeSupported( ) ?
+         bean.getCurrentThreadUserTime( ) : 0L;
+ }
+
+ /** Get system time in nanoseconds. */
+ public static long getSystemTime( ) {
+     ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
+     return bean.isCurrentThreadCpuTimeSupported( ) ?
+         (bean.getCurrentThreadCpuTime( ) - bean.getCurrentThreadUserTime( )) : 0L;
+ }
 }

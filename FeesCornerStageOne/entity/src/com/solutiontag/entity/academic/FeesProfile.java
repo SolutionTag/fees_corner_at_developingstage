@@ -57,7 +57,7 @@ public class FeesProfile extends ApplicationPrimaryClass implements Serializable
   private Date feesAssignedDate;
   
   @Column(name="assignedfeesfineAmount")
-  private Date assignedFeesFineAmount;
+  private Float assignedFeesFineAmount;
   
   @ManyToOne(cascade=CascadeType.PERSIST)
   @JoinColumn(name="academicianid")
@@ -164,23 +164,6 @@ public class FeesProfile extends ApplicationPrimaryClass implements Serializable
     this.feesAssignedDate = feesAssignedDate;
   }
 
-
-  /**
-   * @return the assignedFeesFineAmount
-   */
-  public Date getAssignedFeesFineAmount() {
-    return assignedFeesFineAmount;
-  }
-
-
-  /**
-   * @param assignedFeesFineAmount the assignedFeesFineAmount to set
-   */
-  public void setAssignedFeesFineAmount(Date assignedFeesFineAmount) {
-    this.assignedFeesFineAmount = assignedFeesFineAmount;
-  }
-
-
   /**
    * @return the academicianInfo
    */
@@ -210,6 +193,22 @@ public class FeesProfile extends ApplicationPrimaryClass implements Serializable
    */
   public void setAcademicanFeesPaidProfile(Set<FeesPaidProfile> academicanFeesPaidProfile) {
     this.academicanFeesPaidProfile = academicanFeesPaidProfile;
+  }
+
+
+  /**
+   * @return the assignedFeesFineAmount
+   */
+  public Float getAssignedFeesFineAmount() {
+    return assignedFeesFineAmount;
+  }
+
+
+  /**
+   * @param assignedFeesFineAmount the assignedFeesFineAmount to set
+   */
+  public void setAssignedFeesFineAmount(Float assignedFeesFineAmount) {
+    this.assignedFeesFineAmount = assignedFeesFineAmount;
   }
   
  

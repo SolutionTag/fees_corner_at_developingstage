@@ -6,26 +6,36 @@ Aniruthan       Jan 10, 2015                        TODO
  */
 package com.feescorner.masterdata.controllers;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.feescorner.academic.services.SetDefnitions;
+import com.feescorner.academic.services.CollectionDefinition;
+import com.feescorner.masterdata.handlers.MasterDataHandler;
+import com.solutiontag.entity.masterdata.SchoolClassSectionDefinition;
 import com.solutiontag.entity.masterdata.SchoolCollection;
+import com.solutiontag.entity.masterdata.SchoolFeesDefinitionAssignment;
 import com.solutiontag.entity.masterdata.SchoolMasterDataDefinition;
 import com.solutiontag.entity.masterdata.SchoolStandardsDefnition;
 import com.solutiontag.entity.masterdata.SchoolSubjectsDefinition;
+import com.solutiontag.entity.masterdata.SchoolSubjectsDefinitionAssignment;
+import com.solutiontag.entity.masterdata.SchoolVocationalGroupDefinition;
+import com.solutiontag.entity.masterdata.SchoolTermDefinition;
 import com.solutiontag.repository.masterdata.SchoolClassSectionDefinitionRepository;
 import com.solutiontag.repository.masterdata.SchoolMasterDataDefinitionRepository;
 import com.solutiontag.repository.masterdata.SchoolStandardsDefnitionRepository;
 
 @Controller
-@RequestMapping("/academics")
+@RequestMapping("/settings")
 public class MasterDataNavigationController {
   
   @Autowired
@@ -36,6 +46,9 @@ public class MasterDataNavigationController {
   @Autowired
   public SchoolClassSectionDefinitionRepository schoolSectionRepo;
   
+  @Autowired
+  public MasterDataHandler masterDataHandler;
+  
   @RequestMapping(value="/display-school-master-data",method=RequestMethod.GET)
   public String lauchAcademicMasterDataScreen(Model model){
     SchoolCollection schoolCollection= new SchoolCollection();
@@ -44,26 +57,35 @@ public class MasterDataNavigationController {
   }
  @RequestMapping(value="/display-academic-master-data")
  public String launchAcademicMasterDataScrenn(Model model){
-   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY21675");
-   Set<SchoolStandardsDefnition> standardList=  schoolMasterDataDefinition.getSchoolStandardsDefnition();
-   Iterator<SchoolStandardsDefnition> iterator=standardList.iterator();
-   while(iterator.hasNext()){
-     SchoolStandardsDefnition schoolStandObj= (SchoolStandardsDefnition) iterator.next();
-     //System.out.println(schoolStandObj.getEqualObjectId()+","+schoolStandObj.getSort()+","+schoolStandObj.getStandardName()+","+schoolStandObj.isStatusForChecked()+","+schoolStandObj.getStandardId());
-   }
-  model.addAttribute("schoolMasterDataDefinition",schoolMasterDataDefinition);
-  model.addAttribute("subjectDefintion",new SchoolSubjectsDefinition());
+   CollectionDefinition setDefinitions=new CollectionDefinition();
+  //  Set<SchoolSubjectsDefinitionAssignment> schoolSubjectAssignmentSet=new HashSet<SchoolSubjectsDefinitionAssignment>();
+   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+   List<SchoolStandardsDefnition> standardDefList=new ArrayList<SchoolStandardsDefnition>(schoolMasterDataDefinition.getSchoolStandardsDefnition());
+   setDefinitions.setClassSectionDefSet(masterDataHandler.getAllSections());
+  // setDefinitions.setSchoolSubjectAssignmentSet(schoolSubjectAssignmentSet);
+   setDefinitions.setStandardDefList(standardDefList);
+   model.addAttribute("setDefinitions", setDefinitions);
+   model.addAttribute("schoolMasterDataDefinition",schoolMasterDataDefinition);
+   model.addAttribute("subjectDefintion",new SchoolSubjectsDefinition());
+   model.addAttribute("vocationalgroupdef",new SchoolVocationalGroupDefinition());
+   model.addAttribute("standardFormModelAttribute",new SchoolStandardsDefnition());
+  
  
   //model.addAttribute(schoolMasterDataDefinition.getSchoolStandardsDefnition());
    return "academicmasterdatascreen";
  }
- @RequestMapping(value="/nonacademic-master-data")
+ @RequestMapping(value="/non-academic-master-data")
  public String lauchNonAcademicmasterDataScreen(Model model){
-   SetDefnitions setDef=new SetDefnitions();
-   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY21675");
-   setDef.setSchoolFeesDefSet( schoolMasterDataDefinition.getSchoolFeesDefintion());
+   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+   CollectionDefinition collectionDef=new CollectionDefinition();
+   Set<SchoolFeesDefinitionAssignment> feesAssignmentSet=new HashSet<SchoolFeesDefinitionAssignment>();
+   collectionDef.setClassSectionDefSet(masterDataHandler.getAllSections());
+   collectionDef.setSchoolFeesDefSet( schoolMasterDataDefinition.getSchoolFeesDefintion());
+   collectionDef.setSchoolFeesAssignmentSet(feesAssignmentSet);
    model.addAttribute("schoolMasterDataDefinition",schoolMasterDataDefinition);
-   model.addAttribute("setDef",setDef);
+   model.addAttribute("termDefinition", new SchoolTermDefinition());
+   model.addAttribute("setDef",collectionDef);
+   
    return "nonacademicmasterdatascreen";
  }
  

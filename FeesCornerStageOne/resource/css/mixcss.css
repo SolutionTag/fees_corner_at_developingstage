@@ -1,0 +1,126 @@
+@charset "utf-8";
+/* CSS Document */
+#mix_div .controls{
+  padding: 2%;
+  background: #333;
+  color: #eee;
+}
+
+#mix_div label{
+  font-weight: 300;
+  margin: 0 .4em 0 0;
+}
+
+#mix_div button{
+  display: inline-block;
+  padding: .4em .8em;
+  background: #666;
+  border: 0;
+  color: #ddd;
+  font-size: 16px;
+  font-weight: 300;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#mix_div button.active{
+  background: #68b8c4;
+}
+
+#mix_div button:focus{
+  outline: 0 none;
+}
+
+#mix_div button + label{
+  margin-left: 1em;
+}
+
+#mix_div .container_mix{
+  padding: 2% 2% 0;
+  text-align: justify;
+  font-size: 0.1px;
+  background: #16A085;
+  
+  -webkit-backface-visibility: hidden;
+}
+
+#mix_div .container_mix:after{
+  content: '';
+  display: inline-block;
+  width: 100%;
+}
+
+#mix_div .container_mix .mix,
+#mix_div .container_mix .gap{
+ /*  display: inline-block; */
+  width: 9%;
+}
+
+#mix_div .container_mix .mix{
+/*   text-align: left;
+  background: #03899c;
+  margin-bottom: 2%;
+  display: none; */
+  text-align: center;
+background: #2C3E50;
+margin-bottom: 2%;
+display: none;
+/* width: 100px; */
+height: 100px;
+/* background: red; */
+-moz-border-radius: 50px;
+-webkit-border-radius: 50px;
+border-radius: 50px;
+  
+}
+
+#mix_div .container_mix .mix.A{
+  border-top: 2px solid black;
+}
+#mix_div .container_mix .mix.gmale{
+border-left: 2px solid white;
+}
+
+#mix_div .container_mix .mix.gfemale{
+border-left: 2px solid orange;
+}
+
+#mix_div .container_mix .mix.B{
+  border-top: 2px solid yellow;
+}
+
+#mix_div .container_mix .mix.C{
+  border-top: 2px solid red;
+}
+
+#mix_div .container_mix .mix:after{
+  content: attr(data-myorder);
+  color: white;
+  font-size: 16px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 4% 6%;
+  font-weight: 700;
+}
+
+#mix_div .container_mix .mix:before{
+  content: '';
+  display: inline-block;
+  padding-top: 60%;
+}
+
+@media all and (min-width: 420px){
+  #mix_div .container_mix .mix,
+  #mix_div .container_mix .gap{
+    width: 32%;
+  }
+}
+
+@media all and (min-width: 640px){
+  #mix_div .container_mix .mix,
+  #mix_div .container_mix .gap{
+    width: 8%;
+  }
+}
+
+

@@ -51,6 +51,7 @@ public class SchoolFeesDefinition extends ApplicationPrimaryClass implements Ser
   
   @Column(name="purposeoffees")
   private String purpose;
+
   
   @ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.MERGE)
   @JoinColumn(name="masterdata_id")

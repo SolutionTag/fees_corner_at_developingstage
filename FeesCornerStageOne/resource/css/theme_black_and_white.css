@@ -7,7 +7,7 @@ body, .main-container, .footer, .main-navigation, ul.main-navigation-menu > li >
 	border-right-color: #C8C7CC;
 }
 .navbar-inverse {
-	background: rgba(35, 35, 35, 0.9);
+	background: #16A085;
 	border-color: #C8C7CC;
 }
 /* ie8 fixes */

@@ -9,3 +9,8 @@
 		 .sectionsize .border_ip{
 		border:none;
 		}
+		.feeslist{
+		display: block;
+		width: 100%;
+		height: 155px;
+		}

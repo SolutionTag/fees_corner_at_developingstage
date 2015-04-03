@@ -8,6 +8,7 @@ package com.solutiontag.entity.masterdata;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -45,7 +46,10 @@ public class SchoolMasterDataDefinition implements Serializable {
     
   /*  SchoolStandardsDefnition schoolStandardsDefnition =new SchoolStandardsDefnition();
     schoolStandardsDefnition.setDefForStandard(this);*/
-    loadDefaultStandards();
+    if(schoolStandardsDefnition.size()==0){
+      loadDefaultStandards();
+    }
+   
     
     SchoolSubjectsDefinition schoolSubjectsDefinition =new SchoolSubjectsDefinition();
     schoolSubjectsDefinition.setDefForSubject(this);
@@ -139,6 +143,14 @@ public class SchoolMasterDataDefinition implements Serializable {
   @OneToMany(cascade=CascadeType.ALL,mappedBy="defForFees",orphanRemoval=true)
   private Set<SchoolFeesDefinition> schoolFeesDefintion=new LinkedHashSet<SchoolFeesDefinition>();
   
+  @Fetch(FetchMode.JOIN)
+  @OneToMany(cascade=CascadeType.ALL,mappedBy="defForVocationalDefinition",orphanRemoval=true)
+  @JsonManagedReference
+  private Set<SchoolVocationalGroupDefinition> vocatinalGroupDefSet=new HashSet<SchoolVocationalGroupDefinition>();
+  
+  @Fetch(FetchMode.JOIN)
+  @OneToMany(cascade=CascadeType.ALL,mappedBy="defForTerm",orphanRemoval=true)
+  private Set<SchoolTermDefinition> termDefinitionSet=new HashSet<SchoolTermDefinition>();
   /**
    * @return the shoolId
    */
@@ -319,14 +331,17 @@ public void loadDefaultStandards(){
       schoolStandardDefintion.setStandardReferenceName("Lower Kindergarten");
       schoolStandardDefintion.setSort(i+1);
       schoolStandardDefintion.setStandardName("LKG");
+     // schoolStandardDefintion.setNoOfGroupEnabled(0);
     }else if(i==1){
       schoolStandardDefintion.setStandardReferenceName("Upper Kindergarten");
       schoolStandardDefintion.setSort(i+1);
       schoolStandardDefintion.setStandardName("UKG");
+     // schoolStandardDefintion.setNoOfGroupEnabled(0);
     }else{
       schoolStandardDefintion.setStandardReferenceName("STD"+(i-1));
       schoolStandardDefintion.setSort(i+1);
       schoolStandardDefintion.setStandardName(ApplicationUtills.RomanNumerals(i-1));
+     // schoolStandardDefintion.setNoOfGroupEnabled(0);
     }
     schoolStandardDefintion.setDefForStandard(this);
     this.schoolStandardsDefnition.add(schoolStandardDefintion);
@@ -360,6 +375,34 @@ public Set<SchoolFeesDefinition> getSchoolFeesDefintion() {
  */
 public void setSchoolFeesDefintion(Set<SchoolFeesDefinition> schoolFeesDefintion) {
   this.schoolFeesDefintion = schoolFeesDefintion;
+}
+
+/**
+ * @return the vocatinalGroupDefSet
+ */
+public Set<SchoolVocationalGroupDefinition> getVocatinalGroupDefSet() {
+  return vocatinalGroupDefSet;
+}
+
+/**
+ * @param vocatinalGroupDefSet the vocatinalGroupDefSet to set
+ */
+public void setVocatinalGroupDefSet(Set<SchoolVocationalGroupDefinition> vocatinalGroupDefSet) {
+  this.vocatinalGroupDefSet = vocatinalGroupDefSet;
+}
+
+/**
+ * @return the termDefinitionSet
+ */
+public Set<SchoolTermDefinition> getTermDefinitionSet() {
+  return termDefinitionSet;
+}
+
+/**
+ * @param termDefinitionSet the termDefinitionSet to set
+ */
+public void setTermDefinitionSet(Set<SchoolTermDefinition> termDefinitionSet) {
+  this.termDefinitionSet = termDefinitionSet;
 }
 
 
