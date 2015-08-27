@@ -8,28 +8,29 @@ package com.feescorner.masterdata.controllers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import atg.taglib.json.util.JSONException;
+
+import com.feescorner.academic.services.ApplicationStringJsons;
 import com.feescorner.academic.services.CollectionDefinition;
 import com.feescorner.masterdata.handlers.MasterDataHandler;
-import com.solutiontag.entity.masterdata.SchoolClassSectionDefinition;
+import com.feescorner.serverstartup.dbUtils.ApplicationUtills;
+import com.meshyog.edument.prerequisites.AcademicMasterDataJsonPrerequisites;
 import com.solutiontag.entity.masterdata.SchoolCollection;
 import com.solutiontag.entity.masterdata.SchoolFeesDefinitionAssignment;
 import com.solutiontag.entity.masterdata.SchoolMasterDataDefinition;
 import com.solutiontag.entity.masterdata.SchoolStandardsDefnition;
 import com.solutiontag.entity.masterdata.SchoolSubjectsDefinition;
-import com.solutiontag.entity.masterdata.SchoolSubjectsDefinitionAssignment;
-import com.solutiontag.entity.masterdata.SchoolVocationalGroupDefinition;
 import com.solutiontag.entity.masterdata.SchoolTermDefinition;
+import com.solutiontag.entity.masterdata.SchoolVocationalGroupDefinition;
 import com.solutiontag.repository.masterdata.SchoolClassSectionDefinitionRepository;
 import com.solutiontag.repository.masterdata.SchoolMasterDataDefinitionRepository;
 import com.solutiontag.repository.masterdata.SchoolStandardsDefnitionRepository;
@@ -48,7 +49,13 @@ public class MasterDataNavigationController {
   
   @Autowired
   public MasterDataHandler masterDataHandler;
-  
+  @Autowired
+  public ApplicationUtills applicationUtills;
+  @Autowired
+  public ApplicationStringJsons applicationStringJsons;
+  @Autowired
+  public AcademicMasterDataJsonPrerequisites jsonPrerequisites;
+ 
   @RequestMapping(value="/display-school-master-data",method=RequestMethod.GET)
   public String lauchAcademicMasterDataScreen(Model model){
     SchoolCollection schoolCollection= new SchoolCollection();
@@ -56,14 +63,16 @@ public class MasterDataNavigationController {
     return "schoolmasterdatascreen";
   }
  @RequestMapping(value="/display-academic-master-data")
- public String launchAcademicMasterDataScrenn(Model model){
+ public String launchAcademicMasterDataScrenn(Model model) throws JSONException{
    CollectionDefinition setDefinitions=new CollectionDefinition();
   //  Set<SchoolSubjectsDefinitionAssignment> schoolSubjectAssignmentSet=new HashSet<SchoolSubjectsDefinitionAssignment>();
-   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
    List<SchoolStandardsDefnition> standardDefList=new ArrayList<SchoolStandardsDefnition>(schoolMasterDataDefinition.getSchoolStandardsDefnition());
+   applicationStringJsons=applicationStringJsons.getApplicationStringJsonForAcademicMasterData(schoolMasterDataDefinition);
    setDefinitions.setClassSectionDefSet(masterDataHandler.getAllSections());
   // setDefinitions.setSchoolSubjectAssignmentSet(schoolSubjectAssignmentSet);
    setDefinitions.setStandardDefList(standardDefList);
+   model.addAttribute("applicationStringJsons",applicationStringJsons);
    model.addAttribute("setDefinitions", setDefinitions);
    model.addAttribute("schoolMasterDataDefinition",schoolMasterDataDefinition);
    model.addAttribute("subjectDefintion",new SchoolSubjectsDefinition());
@@ -76,7 +85,7 @@ public class MasterDataNavigationController {
  }
  @RequestMapping(value="/non-academic-master-data")
  public String lauchNonAcademicmasterDataScreen(Model model){
-   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
    CollectionDefinition collectionDef=new CollectionDefinition();
    Set<SchoolFeesDefinitionAssignment> feesAssignmentSet=new HashSet<SchoolFeesDefinitionAssignment>();
    collectionDef.setClassSectionDefSet(masterDataHandler.getAllSections());

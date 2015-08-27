@@ -112,6 +112,7 @@ public class SchoolMasterDataDefinition implements Serializable {
   @Fetch(FetchMode.JOIN)
   @OneToMany(cascade=CascadeType.ALL,mappedBy="defForStandard",orphanRemoval=true)
   @OrderBy("sort ASC")
+  @JsonManagedReference
   private Set<SchoolStandardsDefnition> schoolStandardsDefnition=new LinkedHashSet<SchoolStandardsDefnition>();
   
   @Fetch(FetchMode.JOIN)

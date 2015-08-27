@@ -23,7 +23,7 @@
     <definition name="schoolmasterdatascreen" extends="homescreen" template="/viewpages/settings/schoolmasterdatascreen.jsp">
         <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
     </definition>
-    <definition name="academicmasterdatascreen" extends="homescreen" template="/viewpages/settings/academicmasterdatascreen.jsp">
+    <definition name="academicmasterdatascreen" extends="homescreen" template="/viewpages/settings/cpy_academicmasterdatascreen.jsp">
         <put-attribute name="designtoolbox" value="/tilesjsp/body/row.jsp" />
     </definition>
      <definition name="nonacademicmasterdatascreen" extends="homescreen" template="/viewpages/settings/nonacademicmasterdata.jsp">

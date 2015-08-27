@@ -24,12 +24,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.feescorner.serverstartup.dbUtils.ApplicationPrimaryClass;
+import com.feescorner.serverstartup.serverstartupServlets.GsonExclude;
 
 @Entity
 @Cacheable
@@ -59,14 +62,19 @@ public class SchoolClassSectionDefinition extends ApplicationPrimaryClass implem
   
   @ManyToOne(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
   @JoinColumn(name="standard_id")
+  @JsonBackReference(value="schoolStandardsDefnition-schoolClassSectionDefinition")
+  @GsonExclude
   private SchoolStandardsDefnition schoolStandardsDefnition;
   
   @ManyToOne(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
   @JoinColumn(name="groupid")
+  @JsonBackReference
+  @GsonExclude
   private SchoolVocationalGroupDefinitionAssignment schoolVocationalGroup;
   
   @Fetch(FetchMode.JOIN)
   @OneToMany(cascade=CascadeType.ALL,mappedBy="schoolClassSection",orphanRemoval=true)
+  @JsonManagedReference
   private Set<SchoolSubjectsDefinitionAssignment> schoolSubjectAssignmentSet=new HashSet<SchoolSubjectsDefinitionAssignment>();
   
   @Fetch(FetchMode.JOIN)

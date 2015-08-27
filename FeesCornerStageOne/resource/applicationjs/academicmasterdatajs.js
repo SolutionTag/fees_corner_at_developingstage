@@ -7,13 +7,13 @@ var standardJson={standardId:"",standardName:"",isSelected:""},
  section=new Object(),
  groupsections=new Object(),
  sectionsForStandards=new Object(),
-section={sectionId:"",sectionName:"",maximumStudents:0},
+ section={sectionId:"",sectionName:"",maximumStudents:0},
  actionContent,
  masterDataId,
  feed,
  wantedForSubjectAssignment=new Object(),
-wantedForGroupSubjectAssignment=new Object(),
-wantedForGroupMetaInfo=new Object(),
+ wantedForGroupSubjectAssignment=new Object(),
+ wantedForGroupMetaInfo=new Object(),
  sectionsForStandards=new Object(),
  subjectAssignmentData=new Object(),
  availableSubjectObj,
@@ -28,7 +28,7 @@ $(document).ready(function(){
 	wantedForVocationalGroupAssignment=JSON.parse($("#generateJsonTwo").html())
 	wantedForGroupMetaInfo=JSON.parse($("#generateJsonFour").html())
 	loadSection();
-	 actionContent=	"<td class=\"center\">"+
+    actionContent=	"<td class=\"center\">"+
 	"<div class=\"visible-md visible-lg hidden-sm hidden-xs\">"+
 	"<a href=\"#\" class=\"btn btn-xs btn-teal tooltips\" data-placement=\"top\" data-original-title=\"Edit\"><i class=\"fa fa-edit\"></i></a>&nbsp;&nbsp;"+
 	"<a href=\"#\" class=\"btn btn-xs btn-bricky tooltips\" data-placement=\"top\" data-original-title=\"Remove\"><i class=\"fa fa-times fa fa-white\"></i></a>"+
@@ -179,13 +179,16 @@ $("#standardDiv #standardList").change(function(event){
 else{
 	$("#availablesubjects li").css("display","");
 }
-	if(isgroupAssigned==true){
+	if(isgroupAssigned==true &&(typeof isgroupAssigned!="undefined" || isgroupAssigned==false)){
+		
 		$("div [data-name=vocationalgroupdiv]").css("display","")
 		var vocationalGroups= wantedForGroupSubjectAssignment[standardId];
 		var options='';
 		Object.keys(vocationalGroups).forEach(function(vocatinalgroupid,v){
-			var groupName=wantedForGroupMetaInfo[vocatinalgroupid].groupname;	
-			options+="<option data-standardid="+standardId+" data-vocationalgroupid="+vocatinalgroupid+" value="+groupName+">"+groupName+"</option>"
+			if(typeof wantedForGroupMetaInfo[vocatinalgroupid]!="undefined"){
+				var groupName=wantedForGroupMetaInfo[vocatinalgroupid].groupname;	
+				options+="<option data-standardid="+standardId+" data-vocationalgroupid="+vocatinalgroupid+" value="+groupName+">"+groupName+"</option>"
+			}
 			})
 			$('#vocationalgroupselect option[value!="111"]').remove();
 			$('#vocationalgroupselect option[value="111"]').attr("data-standardid",standardId);
@@ -378,9 +381,48 @@ $("#subjectAssignmentSave").click(function(event){
 		}	
 	
 	}).disableSelection();
-	
-	$("#vocationalGroupSave").click(function(){
+	 var completed = false;
+	$("#vocationalGroupSave_modified").click(function(){
+		var def1 = $.Deferred();
+	    var def2 = $.Deferred();
+	    var def3 = $.Deferred();
 		var vocationalForm= $("#vocationalgroupdef").serializeArray();
+		var serializedObject={};
+		$.each(vocationalForm,function(key,val){
+			serializedObject[val.name]=val.value;
+		});
+		var req = {
+				 method: 'POST',
+				 url: '/fcds/settings/create-vocational-group',
+				 async: true,
+				 data:  JSON.stringify(serializedObject) 
+				}
+		var promise= vocationalGroupAjax(req).success(function(json) {
+			alert("ajax sucess")
+		    	completed=true;
+		        vocationalGroupScope.vocationalGroupList=$.fn.convertJsonStrArrayToObjectArray(json.myArrayList);
+		        $("#vocationalgrouplists label>input").iCheck({
+		            checkboxClass: 'icheckbox_flat-green',
+		            });
+		    }).error(function(xhr,response){
+		    	completed=true;
+		    });
+		alert("before ajax completion")
+		promise.then(function(data){
+			$("#vocationalgrouplists label>input").iCheck({
+	            checkboxClass: 'icheckbox_flat-green',
+	            });
+			
+		});
+		
+})
+if(completed){
+    	alert("comming")
+    	$("#vocationalgrouplists label>input").iCheck({
+            checkboxClass: 'icheckbox_flat-green',
+            });
+    } 
+		/*var vocationalForm= $("#vocationalgroupdef").serializeArray();
 		var serializedObject={};
 		$.each(vocationalForm,function(key,val){
 			serializedObject[val.name]=val.value;
@@ -392,14 +434,14 @@ $("#subjectAssignmentSave").click(function(event){
 			url:"/fcds/settings/create-vocational-group",
 			data :JSON.stringify(serializedObject),
 			success:function(data){
-				alert(data);
+				$.parseJSON("["+JSON.parse(data).myArrayList+"]")
 				document.getElementById("vocationalgroupdef").reset();
 				
 			},
 			error:function(){
 			}
-		})
-	});
+		})*/
+
 	$("#standardsforassigngroup").change(function(){
 		$("#vocationalgrouplists input[type='checkbox']").iCheck('uncheck');
 		$("#vocationalgrouplists input[type=checkbox]").attr("data-derivedcompareid","");
@@ -459,14 +501,16 @@ $("#subjectAssignmentSave").click(function(event){
 						return groupobject;
 			});
 		
-		// vocationalStandard.isSectionExit=sectionassigned;
 		vocationalStandard[standardid]=assignedVocatinal;
-		//var json=new Object();
-		//json=vocationalStandard
 		 var data={ "vocationalstandars":vocationalStandard,
 				   "isSectionExit":sectionassigned
 		 }
-		$.ajax({
+		 var url="/fcds/settings/assign-vocational-group/";
+				    $('#vocationGroupAssingForm').attr('method','post');
+				   $("#vocationGroupAssingForm").append("<input type='hidden' name='customParameter' value='"+JSON.stringify(data)+"' />");
+				   $('#vocationGroupAssingForm').attr('action', encodeURI(url)).submit();
+		 //Commented for form submission instead of Ajax call......will required future.///
+	/*	$.ajax({
 			 type:"post",
 			 data:JSON.stringify(data),
 			 contentType: 'application/json',
@@ -476,7 +520,7 @@ $("#subjectAssignmentSave").click(function(event){
 				 wantedForVocationalGroupAssignment[standardid]=JSON.parse(data)[standardid];
 					$("#vocationalgrouplists input[type='checkbox']").iCheck('uncheck');
 					$("#vocationalgrouplists input[type=checkbox]").attr("data-derivedcompareid","");
-					var standardId=standardid
+					var standardId=standardid;
 					var vocationalGroupArray= wantedForVocationalGroupAssignment[standardId];
 					var size=vocationalGroupArray.length;
 					if(size!=0){
@@ -495,7 +539,7 @@ $("#subjectAssignmentSave").click(function(event){
 			error:function(){
 				
 			}
-		})
+		})*/
 	}else{
 		return false;
 	}
@@ -547,18 +591,18 @@ $("#subjectAssignmentSave").click(function(event){
 $(document).on("ifClicked", "#standardsHead input[type=checkbox]",
 		function(event) {
 			if (!this.checked) {
-				$(this).parent().nextAll("input[data-name=checked]").val(true);
+				$(this).parent().nextAll("input[data-id=checked]").val(true);
 			} else {
-				$(this).parent().nextAll("input[data-name=checked]").val(false);
+				$(this).parent().nextAll("input[data-id=checked]").val(false);
 			}
 
 		})
 $(document).on("click", "#standardsHead input[type=checkbox]",
 		function(event) {
 			if (!this.checked) {
-				$(this).parent().nextAll("input[data-name=checked]").val(true);
+				$(this).parent().nextAll("input[data-id=checked]").val(true);
 			} else {
-				$(this).parent().nextAll("input[data-name=checked]").val(false);
+				$(this).parent().nextAll("input[data-id=checked]").val(false);
 			}
 
 		});
@@ -572,8 +616,8 @@ function enableOrdisableSectionStandards(){
 	
 }
 $(document).on('click','#saveSecitons',function(event){
-var groupEnabledStandards=$("div [class=row][data-isgroupenabled=true]");
-var groupDisabledStandards=$("div [class=row][data-isgroupenabled=false]");
+var groupEnabledStandards=$("div[data-isgroupenabled=true]");
+var groupDisabledStandards=$("div[data-isgroupenabled=false]");
 		groupEnabledStandards.each(function(key,val){
 			
 		var standardId=$(val).data('standardid');
@@ -669,7 +713,7 @@ if(flagForCheckEmpty){
 }else{
 	var wrappedSectionData=JSON.stringify(sectionsForStandards);
 	encodeURI()
-	 var url="/fcds/settings/saveSections/"
+	 var url="/fcds/settings/saveSections/";
 	// encodeURI(url);
 		// alert(JSON.stringify(sectionsForStandards))
 	    $('#sectionDefinitionForm').attr('method','post');
@@ -750,8 +794,10 @@ function loadSection(){
 		var vocationalGroups= wantedForGroupSubjectAssignment[standardId];
 		var options='';
 		Object.keys(vocationalGroups).forEach(function(vocatinalgroupid,v){
-			var groupName=wantedForGroupMetaInfo[vocatinalgroupid].groupname;	
-			options+="<option data-standardid="+standardId+" data-vocationalgroupid="+vocatinalgroupid+" value="+groupName+">"+groupName+"</option>"
+			if(typeof wantedForGroupMetaInfo[vocatinalgroupid]!="undefined"){
+				var groupName=wantedForGroupMetaInfo[vocatinalgroupid].groupname;	
+				options+="<option data-standardid="+standardId+" data-vocationalgroupid="+vocatinalgroupid+" value="+groupName+">"+groupName+"</option>"
+			}
 			})
 			$('#vocationalgroupselect option[value!="111"]').remove();
 			$('#vocationalgroupselect option[value="111"]').attr("data-standardid",standardId);
@@ -851,4 +897,9 @@ function getClassSectionsOfStandard(sectionElememts,sectionSize){
 		}
 	})
 	return sectionArray;
+}
+function getStandardBeanObjectAsJson(){
+	var standardArray = new Object();
+	standardArray = JSON.parse($("#standardJsonObjectAsString").html());
+	return  $.fn.convertJsonStrArrayToObjectArray(standardArray);
 }

@@ -150,7 +150,7 @@
 									</a>
 								</li>
 								<li>
-									<a href="${pageContext.request.contextPath}/settings/display-academic-master-data" id="academicmasterdata">
+									<a href="${pageContext.request.contextPath}/settings/academic-master-data" id="academicmasterdata">
 										<span class="title"> Academic MD MGT </span>
 									</a>
 								</li>

@@ -14,10 +14,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
@@ -28,12 +32,16 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.id.IdentifierGenerator;
+import org.json.JSONArray;
+import org.springframework.stereotype.Component;
 
+import com.feescorner.serverstartup.serverstartupServlets.GsonExclusionStrategy;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.solutiontag.entity.masterdata.SchoolCollection;
 
+@Component
 public class ApplicationUtills implements IdentifierGenerator{
 
   public static Properties properties;
@@ -199,4 +207,23 @@ public static Timestamp getRandomTimeBetweenTwoDates () {
      return bean.isCurrentThreadCpuTimeSupported( ) ?
          (bean.getCurrentThreadCpuTime( ) - bean.getCurrentThreadUserTime( )) : 0L;
  }
+ 
+ public static String convertListToJsonString(List<?> listObject){
+	 ArrayList<String> list = new ArrayList<String>(); 
+		JSONArray jsonArray = new JSONArray();;
+		Iterator<?> iterator = listObject.iterator();
+		while (iterator.hasNext()) {
+			Object convertingObject = (Object) iterator.next();
+			Gson gsonStrategy = ApplicationUtills
+					.createGsonFromBuilder(new GsonExclusionStrategy(Date.class));
+			jsonArray.put(gsonStrategy.toJson(convertingObject));
+			
+		}
+		//	new JSONArray(jsonArray.toString());
+		list.toString();
+		Gson gsonObj = ApplicationUtills.createGsonFromBuilder(new GsonExclusionStrategy(Date.class));
+		System.out.println(gsonObj.toJson(jsonArray));
+		return gsonObj.toJson(jsonArray);
+	 
+	 }
 }

@@ -8,7 +8,6 @@ package com.feescorner.serverstartup.dbUtils;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -19,8 +18,6 @@ import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDataSource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.log4j.Logger;
-import org.hibernate.cache.ehcache.EhCacheRegionFactory;
-import org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory;
 import org.hibernate.ejb.HibernatePersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -76,7 +73,7 @@ public class BuildSpringEntityManager {
 @Bean(name="getHibernateJpaVendorAdapter")
 public static JpaVendorAdapter getHibernateJpaVendorAdapter() {
   //  hibernateJpaVendorAdaptor.setShowSql(true);
-   // hibernateJpaVendorAdaptor.setGenerateDdl(true);
+  //  hibernateJpaVendorAdaptor.setGenerateDdl(true);
     hibernateJpaVendorAdaptor.setDatabase(Database.MYSQL);
     hibernateJpaVendorAdaptor.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
     return hibernateJpaVendorAdaptor;
@@ -98,7 +95,7 @@ public static HashMap<String,String> getJpaPropertyMap(){
 
 public static Properties jpaProperties(){
   jpaProperties.put("hibernate.dialect","org.hibernate.dialect.MySQLDialect");
- // jpaProperties.put("hibernate.hbm2ddl.auto", "update");
+  jpaProperties.put("hibernate.hbm2ddl.auto", "update");
   jpaProperties.put("hibernate.enable_lazy_load_no_trans", "true");
   jpaProperties.put("hibernate.ejb.naming_strategy", org.hibernate.cfg.ImprovedNamingStrategy.class.getName());
  

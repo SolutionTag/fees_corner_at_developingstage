@@ -110,7 +110,7 @@ public class AcademicController {
     ApplicationUtills.getSchoolCollectionObject();
     AcademicianInfo  acdemicianInfoObj=new AcademicianInfo();
   //  AcademicianStandardInfo academicianStdInfo=new AcademicianStandardInfo();
-    SchoolCollection schoolCollection=schoolCollectionRepo.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolCollection schoolCollection=schoolCollectionRepo.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     System.out.println(schoolCollection);
 /*    
     
@@ -278,7 +278,7 @@ public class AcademicController {
 
   @RequestMapping(value="student-operations",method=RequestMethod.GET)
   public String academicanClassAssign(Model model,HttpServletRequest request, HttpServletResponse resp) {
-    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
  Set< AcademicianInfo> academicianInfo  =academicainInfoRepos.findByacademicanStandardId(20999);
  System.out.println(academicianInfo);
   //  Set<AcademicianStandardInfo> academicianStandardList = standardInfoRepository.returnStudentStandardsSet(62208);
@@ -291,7 +291,7 @@ public class AcademicController {
   @RequestMapping(value="/standard/{standardid}",method=RequestMethod.POST)
   public String returnAcademiciansAgainstStandards(@PathVariable("standardid") Integer standardid, Model model,HttpServletRequest request,HttpServletResponse resp){
     CollectionDefinition setDef=new CollectionDefinition();
-    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     Set<AcademicianInfo> academicianInfo = new HashSet<AcademicianInfo>(academicainInfoRepos.findByacademicanStandardId(standardid)); //standardInfoRepository.returnStudentStandardsSet(standardid);
     List<AcademicianInfo> academicianInfoList=new ArrayList<AcademicianInfo>(academicianInfo);
     Collections.sort(academicianInfoList,ApplicationComparator.studentAdmissionDateComparator);
@@ -307,7 +307,7 @@ public class AcademicController {
   @RequestMapping(value="/sectionAllocation",method=RequestMethod.POST)
   public String sectionAllocation(@RequestParam String wrappedData, Model model,HttpServletRequest request,HttpServletResponse response) throws JSONException{
     CollectionDefinition setDef=new CollectionDefinition();
-    SchoolCollection schoolCollection= schoolCollectionRepo.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolCollection schoolCollection= schoolCollectionRepo.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
      Map<Integer,AcademicianInfo> academicianInfoMap=schoolCollection.getAcadeinfo();
      
     JSONObject sectionwiseStudents=new JSONObject(wrappedData);

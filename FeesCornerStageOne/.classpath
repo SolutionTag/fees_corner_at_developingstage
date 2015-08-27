@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="master/src"/>
+	<classpathentry kind="src" path="entity/src"/>
+	<classpathentry kind="src" path="serverstartup/src"/>
+	<classpathentry kind="src" path="academics/src"/>
+	<classpathentry kind="src" path="finance/src"/>
 	<classpathentry kind="src" path="repository/src"/>
 	<classpathentry kind="src" path="cqengine/src"/>
-	<classpathentry kind="src" path="finance/src"/>
-	<classpathentry kind="src" path="entity/src"/>
-	<classpathentry kind="src" path="master/src"/>
-	<classpathentry kind="src" path="academics/src"/>
-	<classpathentry kind="src" path="serverstartup/src"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/com.mysql.jdbc_5.1.5.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/com.springsource.org.aopalliance-1.0.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-logging-1.2.jar"/>
@@ -47,7 +47,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-pool-1.6.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-dbcp-1.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang-2.6.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-digester-2.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/tiles-request-jsp-1.0.6.jar"/>
@@ -65,8 +64,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/json-20140107.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/gson-2.2.4-javadoc.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/gson-2.2.4.jar"/>
-	<classpathentry kind="lib" path="C:/Tomcat 7.0/lib/jsp-api.jar"/>
-	<classpathentry kind="lib" path="C:/Tomcat 7.0/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jstl-1.2 (1).jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/standard-1.1.2 (1).jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/javassist-3.18.1-Beta1.jar"/>
@@ -79,5 +76,8 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/guava-18.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/JoSQL-0.6.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/org.apache.servicemix.bundles.gentlyweb-utils-1.5_1.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Apache Software Foundation/apache-tomcat-7.0.53/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Apache Software Foundation/apache-tomcat-7.0.53/lib/servlet-api.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

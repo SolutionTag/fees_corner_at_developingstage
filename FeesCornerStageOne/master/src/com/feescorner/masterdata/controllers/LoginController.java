@@ -37,11 +37,11 @@ public class LoginController {
   public String lauchadminLoginScreen(Model model,HttpServletRequest request,HttpServletResponse response){
    
     Cookie[] cookies = request.getCookies();
-    if (cookies != null && cookies.length>1)
+    if (cookies != null && cookies.length > 1)
     {
-        if(cookies[1].getValue().compareTo("solutiontag")==0 && cookies[2].getValue().compareTo("password")==0)
+        if(cookies[0].getValue().compareTo("solutiontag")==0 && cookies[1].getValue().compareTo("solutiontag")==0)
         {
-         SchoolCollection schoolCollection=schoolCollectionRepository.findOne("RAdVI SCHOOLCBSEPRE-PRIMARY10337");
+         SchoolCollection schoolCollection=schoolCollectionRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
           if(schoolCollection !=null){
             ApplicationUtills.setSchoolCollectionObject(schoolCollection);
           }

@@ -18,10 +18,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.feescorner.serverstartup.dbUtils.ApplicationPrimaryClass;
+import com.feescorner.serverstartup.serverstartupServlets.GsonExclude;
 
 @Entity
 @Cacheable
@@ -57,6 +59,8 @@ public class SchoolSubjectsDefinitionAssignment extends ApplicationPrimaryClass 
   
   @ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
   @JoinColumn(name="section_id",referencedColumnName="equalId")
+  @JsonBackReference
+  @GsonExclude
   private SchoolClassSectionDefinition schoolClassSection;
   
   

@@ -21,11 +21,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.feescorner.serverstartup.dbUtils.ApplicationPrimaryClass;
+import com.feescorner.serverstartup.serverstartupServlets.GsonExclude;
 
 @Entity
 @Table(name="vocatinalgroupassignment")
@@ -55,10 +58,13 @@ public class SchoolVocationalGroupDefinitionAssignment extends ApplicationPrimar
   private boolean groupEnabled;
   
   @OneToMany(cascade=CascadeType.ALL, mappedBy="schoolVocationalGroup",orphanRemoval=true)
+  @JsonManagedReference
   private Set<SchoolClassSectionDefinition> sectionSet =new HashSet<SchoolClassSectionDefinition>();
   
   @ManyToOne(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
   @JoinColumn(name="standard_id")
+  @JsonBackReference
+  @GsonExclude
   private SchoolStandardsDefnition schoolStandardsDefnition;
   
   @Column(name="allsectionfeesessame")

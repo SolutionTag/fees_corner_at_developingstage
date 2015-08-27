@@ -268,13 +268,13 @@ public class MasterDataHandler {
   }
   
   public SchoolCollection getSchoolCollectionObject(){
-    SchoolCollection  schoolCollection=schoolCollectionRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolCollection  schoolCollection=schoolCollectionRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     return schoolCollection;
   }
 
   public SchoolSubjectsDefinition saveSubject(SchoolSubjectsDefinition schoolSubDef){
    // Set<SchoolSubjectsDefinition> subDefSet=new HashSet<SchoolSubjectsDefinition>();
-    SchoolMasterDataDefinition  masterDataObj=masterDataDefinitionRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolMasterDataDefinition  masterDataObj=masterDataDefinitionRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     masterDataObj.getSchoolSubjectsDefinition().add(schoolSubDef);
     //masterDataObj.setSchoolSubjectsDefinition(subDefSet);
     schoolSubDef.setDefForSubject(masterDataObj);
@@ -856,19 +856,24 @@ if(primaryKey!=null){
 
   public  Set<SchoolClassSectionDefinition> getAllSections() {
     SchoolMasterDataDefinition schoolMasterDataDefinition =
-        masterDataDefinitionRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+        masterDataDefinitionRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     Set<SchoolClassSectionDefinition> classSectionSet = new HashSet<SchoolClassSectionDefinition>();
-    Set<SchoolStandardsDefnition> standardList =
-        schoolMasterDataDefinition.getSchoolStandardsDefnition();
-    if(standardList !=null){
+    Set<SchoolStandardsDefnition> standardList =schoolMasterDataDefinition.getSchoolStandardsDefnition();
+    
+    if(standardList !=null && standardList.size()!=0)
+    {
       Iterator<SchoolStandardsDefnition> iterator = standardList.iterator();
       while (iterator != null && iterator.hasNext()) {
         SchoolStandardsDefnition schoolStandObj = (SchoolStandardsDefnition) iterator.next();
+        if(schoolStandObj.getStandardId()==69142){
+        	System.out.println();
+        }
         if(schoolStandObj.isGroupassigned()!=true){
           Iterator<SchoolClassSectionDefinition> sectionIterator =
               schoolStandObj.getSectionSet().iterator();
           while (sectionIterator != null && sectionIterator.hasNext()) {
             SchoolClassSectionDefinition classSectionObj = sectionIterator.next();
+            
             classSectionSet.add(classSectionObj);
           }
         }else{

@@ -20,15 +20,15 @@ pageEncoding="ISO-8859-1"%>
 		<tiles:insertAttribute name="cssfiles"/>
 		<tiles:insertAttribute name="jsfiles" />
 		<script  src="${pageContext.request.contextPath}/resources/applicationjs/academicmasterdatajs.js"/></script>
+		 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/angularcontrollers/masterdata.angular.js"></script>
 		<script  src="${pageContext.request.contextPath}/resources/js/cus.js"/></script>
 		<style type="text/css">
      .selectedItem{border: 2px dashed #c0ffee;}
        </style>
-		
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 </head>
-    <body>
+    <body >
     <tiles:insertAttribute name="header" />
       <div class="main-container">
         <tiles:insertAttribute name="leftmenu"/>
@@ -94,13 +94,13 @@ pageEncoding="ISO-8859-1"%>
 														</a>
 													</li>                                                                                                        
 												</ul>
-												<div class="tab-content">
+												<div class="tab-content" ng-app="academic_master_data"  >
 													<div class="tab-pane in active" id="standarddeclaration">
 											<!--  tab 1 msg-->
-											
 											<!--JSON generation Area  -->
 										 <div id="generateJsonOne" style="display: none;">
-											 <json:object prettyPrint="true" name="section" escapeXml="true">
+										 ${applicationStringJsons.prerequisitesForSubjectAssignment}
+											<%--  <json:object prettyPrint="true" name="section" escapeXml="true">
 														<c:forEach var="standardDef"
 															items="${schoolMasterDataDefinition.schoolStandardsDefnition}"
 															varStatus="loopStatus">
@@ -116,10 +116,11 @@ pageEncoding="ISO-8859-1"%>
 															</c:if>
 															</json:array>
 														</c:forEach>
-                                                </json:object>
+                                                </json:object> --%>
 											</div>
 											<div id="generateJsonTwo" style="display: none;">
-													<json:object>
+											${applicationStringJsons.prerequisitesForVocationalGroupAssignment}
+													<%-- <json:object>
 														<c:forEach var="standardDef"
 															items="${schoolMasterDataDefinition.schoolStandardsDefnition}"
 															varStatus="loopStatus">
@@ -131,11 +132,12 @@ pageEncoding="ISO-8859-1"%>
 																	    </json:object>
 															</json:array>
 														</c:forEach>
-													</json:object>
+													</json:object> --%>
 
 											</div>
 											<div id="generateJsonThree" style="display: none">
-												 <json:object prettyPrint="true" name="" escapeXml="true">
+											${applicationStringJsons.prerequisitesForVocationalGroupSubjectAssignment}
+											<%-- 	 <json:object prettyPrint="true" name="" escapeXml="true">
 												<c:forEach var="standardDef"
 															items="${schoolMasterDataDefinition.schoolStandardsDefnition}"
 															varStatus="loopStatus">
@@ -163,10 +165,11 @@ pageEncoding="ISO-8859-1"%>
 															</c:if>
 															</json:object>
 													</c:forEach>
-                                                </json:object>
+                                                </json:object> --%>
 											</div>
                                             <div id="generateJsonFour" style="display: none">
-												<json:object prettyPrint="true" name="" escapeXml="true">
+                                            ${applicationStringJsons.prerequisitesForGroupMetaInfo}
+											<%-- 	<json:object prettyPrint="true" name="" escapeXml="true">
 												<c:forEach var="standardDef"
 															items="${schoolMasterDataDefinition.schoolStandardsDefnition}"
 															varStatus="loopStatus">
@@ -179,8 +182,20 @@ pageEncoding="ISO-8859-1"%>
 																	</c:forEach>
 															</c:if>
 													</c:forEach>
-                                                </json:object>
+                                                </json:object> --%>
 											</div>
+											<form:form modelAttribute="applicationStringJsons">
+												<spring:bind
+													path="applicationStringJsons.standardJsonObjectAsString">
+													<div id="${status.expression}" style="display: none">
+														${status.value}</div>
+												</spring:bind>
+												<spring:bind
+													path="applicationStringJsons.vocationalGroupJsonObjectAsString">
+													<div id="${status.expression}" style="display: none">
+														${status.value}</div>
+												</spring:bind>
+											</form:form>
  										
 											<!--End Area  -->
 											
@@ -196,12 +211,12 @@ pageEncoding="ISO-8859-1"%>
 													<i class="fa fa-ok"></i> Your form validation is successful!
 												</div>
 											</div>
-                                            <div class="checkbox-inline" id="standardsHead">
-                                             <div class="row" id="standarddiv">
+                                            <div class="checkbox-inline"  id="standardsHead">
+                                 <%--             <div class="row" id="standarddiv">
 														<c:forEach var="standardDef"
 															items="${setDefinitions.standardDefList}"
 															varStatus="loopStatus">
-															<%-- <spring:bind path="schoolMasterDataDefinition.schoolStandardsDefnition[${loopStatus.index}].standardId"></spring:bind> --%>
+															<spring:bind path="schoolMasterDataDefinition.schoolStandardsDefnition[${loopStatus.index}].standardId"></spring:bind>
 															<c:if test="${standardDef.statusForChecked==false}">
 															 <div class="col-md-3">
 																<label class="checkbox-inline"> <input
@@ -226,8 +241,8 @@ pageEncoding="ISO-8859-1"%>
 														</spring:bind>
 																		
 																		
-																			<%-- <form:hidden value="${standardDef.defForStandard}"
-																		path="schoolStandardsDefnition[${loopStatus.index}].defForStandard" /> --%>
+																			<form:hidden value="${standardDef.defForStandard}"
+																		path="schoolStandardsDefnition[${loopStatus.index}].defForStandard" />
 																		
 																		
 																	<big>${standardDef.standardName}</big>
@@ -256,15 +271,29 @@ pageEncoding="ISO-8859-1"%>
 														<spring:bind path="setDefinitions.standardDefList[${loopStatus.index}].standardId">
 																		<input  name="<c:out value="${status.expression}"/>"  value="<c:out value="${status.value}"/>" type="hidden">
 														</spring:bind>
-																		<%-- <form:hidden value="${standardDef.defForStandard}"
-																		path="schoolStandardsDefnition[${loopStatus.index}].defForStandard" /> --%>
+																		<form:hidden value="${standardDef.defForStandard}"
+																		path="schoolStandardsDefnition[${loopStatus.index}].defForStandard" />
 																	<big>${standardDef.standardName}</big>
 																</label>
 																</div>
 															</c:if>
 														</c:forEach>
-														 </div>
-													</div>
+														 </div> --%>
+							<div class="row" id="standarddivloop"  ng-controller="standardController">
+							 <div class="col-md-3" ng-repeat="standard in standards track by $index | orderBy:'standard.sort'"  >
+								   <label class="checkbox-inline"><big>{{standard.standardName}}</big>
+								<input type="checkbox" checked="checked" class="flat-green" ng-if=standard.statusForChecked==true>
+								<input type="checkbox" class="flat-green" ng-if=standard.statusForChecked==false>
+								<input  name=standardDefList[{{$index}}].statusForChecked  data-id="checked"  value="{{standard.statusForChecked}}" type="hidden">
+								<input  name=standardDefList[{{$index}}].compareId type="hidden" value="{{standard.compareId}}">
+								<input  name=standardDefList[{{$index}}].standardReferenceName type="hidden" value="{{standard.standardReferenceName}}" >
+								<input  name=standardDefList[{{$index}}].sort  type="hidden" value="{{standard.sort}}">
+								<input  name=standardDefList[{{$index}}].standardName type="hidden" value="{{standard.standardName}}">
+								<input  name=standardDefList[{{$index}}].standardId" type="hidden" value="{{standard.standardId}}">
+									</label>
+							</div>
+							</div>
+				</div>
                                            <div class="col-md-4">
 												<button class="btn btn-green" type="submit"   id="saveStandards">
 													Save 
@@ -291,7 +320,7 @@ pageEncoding="ISO-8859-1"%>
                                           <button class="btn btn-danger no-display" type="button" id="bcktocreate" style="height: 34px;">
                                              <span class="clip-close"></span>
                                          </button>
-                                         <button class="btn btn-blue" type="button" id=openstandardform>Add New</button>
+                                         <button class="btn btn-blue" type="button" id="openstandardform">Add New</button>
                                      </div>    
                                        </div>
                     <!-- end: FORM School info PANEL -->                                                        
@@ -312,7 +341,7 @@ pageEncoding="ISO-8859-1"%>
 												<div class="panel-body">
 													<!--   Add New School form--> 
  <!-- start: FORM School info PANEL -->
-							<form id="vocationalgroupdef"  role="form" action="/fcds/settings/creategroup" method="post">
+							<form id="vocationalgroupdef"  role="form" action="/fcds/settings/creategroup" method="post" ng-controller="vocationalGroupDefinition">
 										<div class="row">
 											<div class="col-md-12">
 												<div class="errorHandler alert alert-danger no-display">
@@ -346,14 +375,14 @@ pageEncoding="ISO-8859-1"%>
 												</div>
 											</div>
 										</div>
-										<div class="row">
+										<div class="row" >
 											<div class="col-md-8">
 												<p>
 													
 												</p>
 											</div>
 											<div class="col-md-4">
-												<button class="btn btn-yellow btn-block" id="vocationalGroupSave" type="button">
+												<button class="btn btn-yellow btn-block" ng-click="vocationGroupFormSubmit()" id="vocationalGroupSave" type="button">
 													Create 
 												</button>
 											</div>
@@ -377,7 +406,7 @@ pageEncoding="ISO-8859-1"%>
 													<!--   Add New Subject form--> 
  <!-- start: FORM Subject PANEL -->
 							
-									<form action="#" role="form" id="form">
+									<form action="#" role="form" id="vocationGroupAssingForm"   name="vocationGroupAssingForm" ng-controller="vocationalGroupAssignController">
 										<div class="row">
 											<div class="col-md-12">
 												<div class="errorHandler alert alert-danger no-display">
@@ -394,7 +423,7 @@ pageEncoding="ISO-8859-1"%>
 													</label>
 													<div class="row">
 														<div class="col-md-3">
-																<select class="form-control" name="standardsforassigngroup" id="standardsforassigngroup">
+															<%-- 	<select class="form-control" name="standardsforassigngroup" id="standardsforassigngroup">
 															 <c:forEach var="standardDef"
 																items="${schoolMasterDataDefinition.schoolStandardsDefnition}"
 																varStatus="standardLoop1">
@@ -410,23 +439,41 @@ pageEncoding="ISO-8859-1"%>
 																
 																	  </c:if>
 																</c:forEach>
+														</select> --%>
+														<select  class="form-control" novalidate="" name="standardsforassigngroup" id="standardsforassigngroup" >
+														 <option value="">Select Standard</option> 
+														 <option data-issectionexit="false"  ng-if="schoolStandards.statusForChecked==true && schoolStandards.sectionSet.length==0" ng-repeat=" schoolStandards in schoolStandardBeanAsJson track by $index | orderBy:'standard.sort'" data-standardid="{{schoolStandards.standardId}}" value="{{$index+1}">
+														 <big>{{schoolStandards.standardName}}</big>
+														 </option>
+														  <option data-issectionexit="false"  ng-if="schoolStandards.statusForChecked==true && schoolStandards.sectionSet.length!=0" ng-repeat=" schoolStandards in schoolStandardBeanAsJson track by $index | orderBy:'standard.sort'" data-standardid="{{schoolStandards.standardId}}" value="{{$index+1}">
+														  <big>{{schoolStandards.standardName}}</big>
+														  </option>
 														</select>
+														<!--  <span class="error" ng-show="vocationGroupAssingForm.standardsforassigngroup.$dirty && vocationGroupAssingForm.standardsforassigngroup.$dirty">Select Standard</span> -->
 														</div>
 													</div>
 												</div>
                                                 </div>
                                          <div class="checkbox-inline">
                                         <h4><label class="label label-default">Available Vocational Groups </label></h4>
-                                        <div class="row" id="vocationalgrouplists">
-                                        <c:forEach var="vocational" items="${schoolMasterDataDefinition.vocatinalGroupDefSet}" varStatus="loopStatus">
-												<div class="col-md-3" >
-													<label class="checkbox-inline"> 
-														<input  data-derivedcompareid=""  data-basegroupcompareid="${vocational.compareId}" type="checkbox" class="flat-green">
-																		<big>${vocational.groupName}</big>
-													</label>
-												</div>
-										</c:forEach>
-										</div>
+                            <div class="row" id="vocationalgrouplists"  >
+                                   <%--   <c:forEach var="vocational" items="${schoolMasterDataDefinition.vocatinalGroupDefSet}" varStatus="loopStatus">
+									<div class="col-md-3" >
+										<label class="checkbox-inline"> 
+											<input  data-derivedcompareid=""  data-basegroupcompareid="${vocational.compareId}" type="checkbox" class="flat-green">
+															<big>${vocational.groupName}</big>
+															
+										</label>
+									</div>
+									</c:forEach> --%>
+									<div class="col-md-3"   ng-repeat="vocationalGroup in vocationalGroupList track by $index" >
+										<label class="checkbox-inline"> 
+											<input  type="checkbox" class="flat-green"  data-basegroupcompareid="{{vocationalGroup.compareId}}">
+															<big>{{vocationalGroup.groupName}}</big>
+										</label>
+									</div>
+									
+							</div>
                                         </div>
 											
 										</div>
@@ -460,8 +507,72 @@ pageEncoding="ISO-8859-1"%>
 													</div>
 <div class="tab-pane" id="sectionStandardsTab">
    <input type="hidden" id="masterDataId" value="${schoolMasterDataDefinition.masterDataId}">    
- <form id="sectionDefinitionForm" method="post">                                             <!--  tab 2 msg--> 
-<c:forEach var="standardDef" items="${schoolMasterDataDefinition.schoolStandardsDefnition}" varStatus="loopStatus">
+ <form id="sectionDefinitionForm" method="post"  ng-controller="standardController">   
+ <div class="" ng-if="standard.statusForChecked==true" ng-repeat="standard in standards track by $index | orderBy:'standard.sort'">
+	   <div class="row" data-isgroupenabled="{{standard.groupassigned}}" ng-if=standard.statusForChecked==true data-standardid="{{standard.standardId}}"><!--group wise head row-->
+			 <div class="col-md-2">
+				<h4><label class="label label-teal">{{standard.standardName}}</label></h4>
+			</div>
+		</div>
+		
+<!-- / group wise head row-->
+<div class=""  ng-if=standard.groupassigned==true ng-repeat="groups in standard.groupSet track by $index">
+			<div class="row" data-name="sectionrow" ng-if=groups.groupEnabled==true  data-standardid="{{standard.standardId}}"><!-- / group1 wise row-->
+							<div class="col-md-2" data-groupcompareid="{{groups.compareId}}" data-ishavinggroup="yes">
+								<center>
+									<label> <big>{{groups.groupName}}</big>
+									</label>
+								</center>
+							</div>
+							<div class="input_fields_wrap" data-name="groupassignedsections">
+								   <div class="col-md-1" ng-repeat="groupsection in groups.sectionSet track by $index">
+	             						<span class="input-icon input-icon-right">
+	             						<input type="text"  data-sectionname="section" value="{{groupsection.sectionName}}" class="form-control ipbox border_ip">
+	              						<input type="hidden" name="indexId"  data-groupcompareid="{{groups.compareId}}" data-standardid="{{standardDef.standardId}}" value="{{groupsection.compareId}}">
+	               						<i class="clip-close-2 remove_field"></i></span>
+									</div>
+							</div>
+							<div class="col-md-1">
+								<button type="button"
+									class="btn btn-purple btn-sm add_field_button">
+									<i class="fa fa-plus"></i>
+								</button>
+							</div>
+                             <div class="col-md-1 sectionsize" ng-if="groups.sectionSet.length==0" data-div="sectionsize">
+                            			<input type="text" data-sectionsize="size"  value=""  class="form-control ipbox border_ip"> 
+                            </div>
+                           
+                             <div class="col-md-1 sectionsize" ng-if="groups.sectionSet.length>0" data-div="sectionsize">
+                            			<input type="text" data-sectionsize="size" value="{{groups.sectionSet[0].maximumStudents}}" ng-bind="{{maximumStudentInSection}}"  class="form-control ipbox border_ip"> 
+                             </div>
+		 </div>	
+<br ng-if=groups.groupEnabled==true><hr ng-if=groups.groupEnabled==true></div>
+ <div class="row" data-name="sectionrow" ng-if=standard.groupassigned==false data-standardid="{{standard.standardId}}"  >
+ <br> <!-- / std row-->
+ 				<div class="col-md-1"></div>
+						<div class="input_fields_wrap">
+						             <div class="col-md-1" ng-repeat="sectionDef in standard.sectionSet">
+							             	<span class="input-icon input-icon-right">
+							             	<input type="text"  data-sectionname="section" value="{{sectionDef.sectionName}}" class="form-control ipbox border_ip">
+							              	<input type="hidden" name="indexId"  data-standardid="{{standardDef.standardId}}" value="{{sectionDef.compareId}}">
+							               <i class="clip-close-2 remove_field"></i></span>
+						             </div>
+						</div>
+						 <div class="col-md-1">
+						 		<button type="button" class="btn btn-purple btn-sm add_field_button" ><i class="fa fa-plus"></i></button>
+						 </div>
+                		 <div class="col-md-1 sectionsize" ng-if=standard.sectionSet.length==0 data-div="sectionsize">
+               					<input type="text" data-sectionsize="size"  value=""  class="form-control ipbox border_ip"> 
+              			 </div>
+                 		 <div class="col-md-1 sectionsize" ng-if="standard.sectionSet.length>0" data-div="sectionsize">
+               					<input type="text" data-sectionsize="size"  value="{{standard.sectionSet[0].maximumStudents}}"  class="form-control ipbox border_ip"> 
+               			</div>
+</div><hr ng-if=standard.groupassigned==false><!-- / std row-->
+ </div>
+ 
+ 
+                                           <!--  tab 2 msg--> 
+<%-- <c:forEach var="standardDef" items="${schoolMasterDataDefinition.schoolStandardsDefnition}" varStatus="loopStatus">
  <c:if test="${standardDef.statusForChecked==true}">            
 		<div class="row" data-isgroupenabled="${standardDef.groupassigned}" data-standardid="${standardDef.standardId}">
 		<!--group wise head row-->
@@ -474,12 +585,12 @@ pageEncoding="ISO-8859-1"%>
 <c:forEach items="${standardDef.groupSet}" var="groups">
 <c:if test="${groups.groupEnabled==true}">
 			<div class="row" data-name="sectionrow"  data-standardid="${standardDef.standardId}"  ><!-- / group1 wise row-->
-																		<div class="col-md-2" data-groupcompareid="${groups.compareId}" data-ishavinggroup="yes">
-																			<center>
-																				<label> <big>${groups.groupName}</big>
-																				</label>
-																			</center>
-																		</div>
+					<div class="col-md-2" data-groupcompareid="${groups.compareId}" data-ishavinggroup="yes">
+						<center>
+							<label> <big>${groups.groupName}</big>
+							</label>
+						</center>
+					</div>
 					<c:set var="noofsections" value="${fn:length(groups.sectionSet)}" />
 							<div class="input_fields_wrap" data-name="groupassignedsections">
 														<c:forEach items="${groups.sectionSet}" var="groupsection">
@@ -530,19 +641,23 @@ pageEncoding="ISO-8859-1"%>
  <div class="col-md-1">
  <button type="button" class="btn btn-purple btn-sm add_field_button" ><i class="fa fa-plus"></i></button>
  </div>
- <c:if test="${noofsections==0}" >
-						                                       <div class="col-md-1 sectionsize" data-div="sectionsize">
-						                                     			<input type="text" data-sectionsize="size"  value=""  class="form-control ipbox border_ip"> 
-						                                     </div></c:if>
-						                                     <c:if test="${noofsections>0}">
-						                                       <div class="col-md-1 sectionsize" data-div="sectionsize">
-						                                     			<input type="text" data-sectionsize="size"  value="${sectionsize}"  class="form-control ipbox border_ip"> 
-						                                     </div></c:if>
+			 <c:if test="${noofsections==0}" >
+			          <div class="col-md-1 sectionsize" data-div="sectionsize">
+			        			<input type="text" data-sectionsize="size"  value=""  class="form-control ipbox border_ip"> 
+			        </div>
+			 </c:if>
+		   	<c:if test="${noofsections>0}">
+			            <div class="col-md-1 sectionsize" data-div="sectionsize">
+			          			<input type="text" data-sectionsize="size"  value="${sectionsize}"  class="form-control ipbox border_ip"> 
+			          </div>
+			 </c:if>
 </div><!-- / std row-->
 <hr>
 </c:if>
 </c:if>
-</c:forEach></form>
+</c:forEach> --%>
+
+</form>
                                 <p style="margin-left:20px;">
 											<!-- 	<button class="btn btn-green" type="button" id="saveSecitons">
 													Save 
@@ -559,8 +674,7 @@ pageEncoding="ISO-8859-1"%>
 												</button>
 											</div>
 										</div>
-												
-                                      		</p>          
+								</p>          
                                      
 														<!-- / tab 2 msg--> 
 													
@@ -950,10 +1064,9 @@ pageEncoding="ISO-8859-1"%>
 											<div class="col-md-6">
 												<!-- start:  PANEL -->
 												Assigned Subjects <span class="symbol required"></span>
-												<ul
-													class="alert panel-box list-inline cond ui-sortable"
+												<ul class="alert panel-box list-inline cond ui-sortable"
 													id="assignedsubjects" style="cursor: move;">
-													<c:forEach items="${setDefinitions.classSectionDefSet}" varStatus="increment" var="classSectionDef">
+												<c:forEach items="${setDefinitions.classSectionDefSet}" varStatus="increment" var="classSectionDef">
 													<c:if test="${fn:length(classSectionDef.schoolSubjectAssignmentSet)!=0}">
 													  <c:forEach items="${classSectionDef.schoolSubjectAssignmentSet}" var="subjectAssignmentObj">
 													  <li data-validforstore="false" class="label label-default ui-sortable-handle" 
@@ -966,8 +1079,8 @@ pageEncoding="ISO-8859-1"%>
 													  <i class="clip-close-4 remove_field" data-basesubjectid="${subjectAssignmentObj.baseSubjectId}" data-name="subjectdelete" data-sectionid="${subjectAssignmentObj.schoolClassSection.compareId}"   data-standardid="${subjectAssignmentObj.standardId}" style=" cursor: pointer;"></i>
 													  </li>
 													  </c:forEach>
-													  </c:if>
-													</c:forEach>
+													</c:if>
+												</c:forEach>
 												</ul>
 											</div>
 											<div class="col-md-6">

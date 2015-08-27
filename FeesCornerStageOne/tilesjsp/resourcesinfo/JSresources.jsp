@@ -3,6 +3,9 @@
 <!--<![endif]-->
 <script>window.jQuery || document.write('<script src="${pageContext.request.contextPath}/resources/js/jquery-2.1.3.min.js">\x3C/script>')</script>
 
+<script src="${pageContext.request.contextPath}/resources/js/angular.min.js"></script>
+
+<script  src="${pageContext.request.contextPath}/resources/applicationjs/jsutills.js"></script>
 
 <script src="${pageContext.request.contextPath}/resources/js/circular-json.js"></script>
 

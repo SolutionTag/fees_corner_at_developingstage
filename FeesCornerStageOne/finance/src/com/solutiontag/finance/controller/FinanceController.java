@@ -81,7 +81,7 @@ public class FinanceController {
 
    
     CollectionDefinition setDef=new CollectionDefinition();
-    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     long startTime = System.currentTimeMillis();
     FeesTermsElementsArrangements fessTermElementArrangement=financesettinghandlers.getfeesTermElementArrangement(schoolMasterDataDefinition.getSchoolStandardsDefnition());
     long endTime = System.currentTimeMillis();
@@ -119,7 +119,7 @@ public class FinanceController {
     int standardId= standardFeesParticulars.getInt("standardId");
     JSONObject feesParticualrsObject=  standardFeesParticulars.getJSONObject(String.valueOf(standardId));
     financesettinghandlers.saveStandardFeesParticualrs(feesParticualrsObject, standardId);
-    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     model.addAttribute("schoolMasterDataDefinition",schoolMasterDataDefinition);
     model.addAttribute("setDef",setDef);
     System.out.println();

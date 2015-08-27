@@ -59,6 +59,7 @@
 	<!-- <aop:config proxy-target-class="true"/> -->
 	<context:component-scan base-package="com.feescorner.serverstartup" />
 	<context:component-scan base-package="com.feescorner.masterdata.services" />
+	<context:component-scan base-package="com.feescorner.academic.services" />
 	<context:component-scan base-package="com.feescorner.masterdata.controllers" />
     <context:component-scan base-package="com.feescorner.masterdata.handlers" />
     <context:component-scan base-package="com.feescorner.academic.controller" />
@@ -66,6 +67,9 @@
     <context:component-scan base-package="com.solutiontag.finance.controller" />
     <context:component-scan base-package="com.solutiontag.finance.handler" />
     <context:component-scan base-package="com.solutiontag.cqengine.indexdefinition" />
+    <context:component-scan base-package="com.meshyog.edument.prerequisites" />
+     <context:component-scan base-package=" com.meshyog.masterdata.buisnesslogic" />
+  
  
     
    <!-- <bean class="com.feescorner.masterdata.handlers.MasterDataHandler"   /> -->

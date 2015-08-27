@@ -35,10 +35,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.feescorner.academic.services.ApplicationStringJsons;
 import com.feescorner.academic.services.CollectionDefinition;
 import com.feescorner.masterdata.handlers.MasterDataHandler;
 import com.feescorner.serverstartup.dbUtils.ApplicationUtills;
 import com.feescorner.serverstartup.serverstartupServlets.JQueryDataTableParamModel;
+import com.meshyog.edument.prerequisites.AcademicMasterDataJsonPrerequisites;
 import com.solutiontag.entity.masterdata.SchoolCollection;
 import com.solutiontag.entity.masterdata.SchoolFeesDefinition;
 import com.solutiontag.entity.masterdata.SchoolMasterDataDefinition;
@@ -87,7 +89,10 @@ public class MasterDataControllers {
   public SchoolVocationalGroupDefinitionRepository schoolVocationalGroupRep;
   @Autowired
   public SchoolTermDefinitionRepository schoolTermRepo;
-
+  @Autowired
+  public ApplicationStringJsons applicationStringJsons;
+  @Autowired
+  public AcademicMasterDataJsonPrerequisites jsonPrerequisites;
   
   @Autowired
   public SchoolCollectionRepository schoolCollectionRepo;
@@ -140,7 +145,7 @@ public String launchSettingsScreen(HttpServletRequest request,HttpServletRespons
  
   @RequestMapping(value="/saveStandard",method=RequestMethod.POST)
   public String processStandardDefinition(@ModelAttribute("setDefinitions") CollectionDefinition setDef ,HttpServletRequest request,HttpServletResponse response,Model model,BindingResult bindingResult) throws Exception{
-   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
    boolean isSaved=masterDataHandler.saveStandardDefintion(setDef.getStandardDefList(),schoolMasterDataDefinition);
    model.addAttribute("standardFormModelAttribute",new SchoolStandardsDefnition());
    System.out.println("standards modified:"+isSaved);
@@ -156,7 +161,7 @@ public String launchSettingsScreen(HttpServletRequest request,HttpServletRespons
   }
   @RequestMapping(value="/add-new-standard",method=RequestMethod.POST)
   public String addNewStandard(@ModelAttribute("standardFormModelAttribute") SchoolStandardsDefnition schoolStandardDef,Model model,HttpServletRequest request,HttpServletResponse resp) throws IOException{
-    SchoolMasterDataDefinition schoolMasterDataDefinition =masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolMasterDataDefinition schoolMasterDataDefinition =masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     schoolStandardDef.setDefForStandard(schoolMasterDataDefinition);
     schoolMasterDataDefinition.getSchoolStandardsDefnition().add(schoolStandardDef);
  /*   HashSet<SchoolStandardsDefnition> standardSet=new HashSet<SchoolStandardsDefnition>();
@@ -199,7 +204,7 @@ public String launchSettingsScreen(HttpServletRequest request,HttpServletRespons
    boolean result= masterDataHandler.saveSection(wrappedSectionData);
    System.out.println(result);
    CollectionDefinition setDefinitions=new CollectionDefinition();
-    SchoolMasterDataDefinition schoolMasterDataDefinition =masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+    SchoolMasterDataDefinition schoolMasterDataDefinition =masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
     List<SchoolStandardsDefnition> standardDefList=new ArrayList<SchoolStandardsDefnition>(schoolMasterDataDefinition.getSchoolStandardsDefnition());
     setDefinitions.setClassSectionDefSet(masterDataHandler.getAllSections());
     setDefinitions.setStandardDefList(standardDefList);
@@ -309,7 +314,7 @@ public void feesAssignment(@RequestParam String finalAssignmentData,HttpServletR
 @RequestMapping(value="fees-creation",method=RequestMethod.POST)
 public void feesCreation(@RequestBody SchoolFeesDefinition schoolFeesDef,Model model,HttpServletRequest req,HttpServletResponse response)
 { 
-SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
 schoolFeesDef.setDefForFees(schoolMasterDataDefinition);
 schoolMasterDataDefinition.getSchoolFeesDefintion().add(schoolFeesDef);
 schoolFeesDefinitionRepository.save(schoolFeesDef);
@@ -321,27 +326,27 @@ System.out.println("trigger");
 
 @RequestMapping(value="create-vocational-group",method=RequestMethod.POST)
 public void createVocationalGroup(@RequestBody SchoolVocationalGroupDefinition schoolVocationalGroup,Model model,HttpServletRequest request,HttpServletResponse resp) throws IOException{
-  
   PrintWriter writter=resp.getWriter();
-  SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+  SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
   schoolVocationalGroup.setDefForVocationalDefinition(schoolMasterDataDefinition);
   schoolMasterDataDefinition.getVocatinalGroupDefSet().add(schoolVocationalGroup);
   schoolVocationalGroupRep.save(schoolVocationalGroup);
-  writter.print("success");
+  List<SchoolVocationalGroupDefinition> vocationalGroupDefinitionsList=  new ArrayList<SchoolVocationalGroupDefinition>(schoolMasterDataDefinition.getVocatinalGroupDefSet());
+  String vocationalGroupJsonString=ApplicationUtills.convertListToJsonString(vocationalGroupDefinitionsList);
+  writter.print(vocationalGroupJsonString);
   
 }
 
-@RequestMapping(value="assign-vocational-group",method=RequestMethod.POST)
-public void assignVocationGroups(@RequestBody String  vocationalStandard,HttpServletRequest request,HttpServletResponse resp) throws IOException{
-  PrintWriter writter=resp.getWriter();
+@RequestMapping(value="/assign-vocational-group",method=RequestMethod.POST)
+public String assignVocationGroups(@RequestParam("customParameter") String  vocationalStandard,HttpServletRequest request,HttpServletResponse resp,Model model) throws IOException{
   java.util.List<SchoolVocationalGroupDefinition> vocationalgrouplist=schoolVocationalGroupRep.findAll();
   System.out.println(vocationalgrouplist.size());
-  
   JSONObject data=new JSONObject(vocationalStandard);
   JSONObject vocationalStandardJsonObj=data.getJSONObject("vocationalstandars");
   String isGroupAssigned=data.getString("isSectionExit");
- JSONObject afterAssignedGroupToStandard=  masterDataHandler.assignVocationGroupToStandards(vocationalStandardJsonObj,isGroupAssigned);
- writter.print(afterAssignedGroupToStandard.toString());
+  JSONObject afterAssignedGroupToStandard=  masterDataHandler.assignVocationGroupToStandards(vocationalStandardJsonObj,isGroupAssigned);
+  model=preRequisiteForlaunchAcademicMasterData(model);
+  return "academicmasterdatascreen";
 }
 @RequestMapping(value="refresh")
 public String refreshPage(HttpServletRequest request,HttpServletResponse response){
@@ -360,7 +365,7 @@ public void createTermDefinition(@RequestBody  SchoolTermDefinition termDefiniti
     System.out.println("===>"+termfrequency.getTermFrequencyName());
     termfrequency.setSchoolTermDef(termDefinition);
   }
-  SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("RAVI SCHOOLCBSEPRE-PRIMARY79936");
+  SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
   termDefinition.setDefForTerm(schoolMasterDataDefinition);
   schoolMasterDataDefinition.getTermDefinitionSet().add(termDefinition);
   schoolTermRepo.save(termDefinition);
@@ -380,6 +385,26 @@ public void deleteSubjectAssignment(@RequestBody String deleteParameters,HttpSer
   writter.print(deleteParameters);
   
 }
+
+public Model preRequisiteForlaunchAcademicMasterData(Model model){
+	CollectionDefinition setDefinitions=new CollectionDefinition();
+	  //  Set<SchoolSubjectsDefinitionAssignment> schoolSubjectAssignmentSet=new HashSet<SchoolSubjectsDefinitionAssignment>();
+	   SchoolMasterDataDefinition schoolMasterDataDefinition=masterDataRepository.findOne("akt matrichigher secondary schoolCBSEPRE-PRIMARY64067");
+	   List<SchoolStandardsDefnition> standardDefList=new ArrayList<SchoolStandardsDefnition>(schoolMasterDataDefinition.getSchoolStandardsDefnition());
+	   applicationStringJsons=applicationStringJsons.getApplicationStringJsonForAcademicMasterData(schoolMasterDataDefinition);
+	   setDefinitions.setClassSectionDefSet(masterDataHandler.getAllSections());
+	  // setDefinitions.setSchoolSubjectAssignmentSet(schoolSubjectAssignmentSet);
+	   setDefinitions.setStandardDefList(standardDefList);
+	   model.addAttribute("applicationStringJsons",applicationStringJsons);
+	   model.addAttribute("setDefinitions", setDefinitions);
+	   model.addAttribute("schoolMasterDataDefinition",schoolMasterDataDefinition);
+	   model.addAttribute("subjectDefintion",new SchoolSubjectsDefinition());
+	   model.addAttribute("vocationalgroupdef",new SchoolVocationalGroupDefinition());
+	   model.addAttribute("standardFormModelAttribute",new SchoolStandardsDefnition());
+	
+	return model;
+}
+
 }
 
 /*For Ref:
